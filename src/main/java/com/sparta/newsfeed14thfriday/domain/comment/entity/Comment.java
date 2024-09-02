@@ -1,6 +1,8 @@
 package com.sparta.newsfeed14thfriday.domain.comment.entity;
 
 
+import com.sparta.newsfeed14thfriday.domain.comment.dto.CommentRequestDto;
+import com.sparta.newsfeed14thfriday.domain.comment.dto.CommentResponseDto;
 import com.sparta.newsfeed14thfriday.entity_common.Timestamped;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -35,6 +37,14 @@ public class Comment extends Timestamped {
 
 
 
+    public Comment(CommentRequestDto requestDto){
+        this.contents = requestDto.getContents();
+        this.commentLikeCount = requestDto.getCommentLikeCount();
+    }
 
+    public void update(CommentRequestDto requestDto){
+        this.contents = requestDto.getContents();
+        this.commentLikeCount = requestDto.getCommentLikeCount();
+    }
 
 }
