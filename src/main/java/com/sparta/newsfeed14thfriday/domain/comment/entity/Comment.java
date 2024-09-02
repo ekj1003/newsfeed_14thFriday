@@ -2,7 +2,7 @@ package com.sparta.newsfeed14thfriday.domain.comment.entity;
 
 
 import com.sparta.newsfeed14thfriday.domain.comment.dto.CommentRequestDto;
-import com.sparta.newsfeed14thfriday.domain.comment.dto.CommentResponseDto;
+import com.sparta.newsfeed14thfriday.domain.user.entity.User;
 import com.sparta.newsfeed14thfriday.entity_common.Timestamped;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -27,13 +27,13 @@ public class Comment extends Timestamped {
     //기본값 false    true 상태라면 삭제된 상태
     private Boolean deleted = false;
 
-//    @ManyToOne
-//    @JoinColumn(name = "user_id")
-//    private User user;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User userId;
 //
 //    @ManyToOne
 //    @JoinColumn(name = "post_id")
-//    private Post post;
+//    private Post postId;
 
 
 
