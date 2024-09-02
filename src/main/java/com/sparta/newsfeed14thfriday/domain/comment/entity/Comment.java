@@ -24,8 +24,8 @@ public class Comment extends Timestamped {
     @Column(name = "comment_like_count",nullable = false,length = 500)
     private Long commentLikeCount;
 
-    @Column(name = "deleted",nullable = false)
-    private Boolean deleted;
+    //기본값 false    true 상태라면 삭제된 상태
+    private Boolean deleted = false;
 
 //    @ManyToOne
 //    @JoinColumn(name = "user_id")
