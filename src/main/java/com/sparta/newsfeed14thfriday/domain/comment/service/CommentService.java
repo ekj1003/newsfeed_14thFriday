@@ -105,16 +105,16 @@ public class CommentService {
     }
 
 
-    public void deleteComment(Long commentId , CommentDeleteRequestDto commentDeleteRequestDto){
+    public void deleteComment(Long commentId){
         Comment comment = findCommentById(commentId);
 
-        User email = userRepository.findByEmail(commentDeleteRequestDto.getEmail())
-                .orElseThrow(()-> new NullPointerException("User not found"));
-
-        // 가독성을 위해서 이름 바꾸는거 생각
-        if ((comment.getEmail() == null) || !ObjectUtils.nullSafeEquals(email.getEmail(), comment.getEmail().getEmail())){
-            throw new IllegalArgumentException("Email not match");
-        }
+//        User email = userRepository.findByEmail(commentDeleteRequestDto.getEmail())
+//                .orElseThrow(()-> new NullPointerException("User not found"));
+//
+//        // 가독성을 위해서 이름 바꾸는거 생각
+//        if ((comment.getEmail() == null) || !ObjectUtils.nullSafeEquals(email.getEmail(), comment.getEmail().getEmail())){
+//            throw new IllegalArgumentException("Email not match");
+//        }
 
         commentRepository.deleteCommentById(commentId);
 

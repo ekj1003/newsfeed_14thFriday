@@ -1,6 +1,7 @@
 package com.sparta.newsfeed14thfriday.domain.comment.controller;
 
 
+import com.sparta.newsfeed14thfriday.domain.comment.dto.request.CommentDeleteRequestDto;
 import com.sparta.newsfeed14thfriday.domain.comment.dto.request.CommentSaveRequestDto;
 import com.sparta.newsfeed14thfriday.domain.comment.dto.request.CommentUpdateRequestDto;
 import com.sparta.newsfeed14thfriday.domain.comment.dto.response.CommentDetailResponseDto;
@@ -38,7 +39,10 @@ public class CommentController {
         return commentService.updateComment(commentId, commentUpdateRequestDto);
     }
 
-
+    @DeleteMapping("/comments/{commentId}")
+    public void deleteComment(@PathVariable Long commentId) {
+        commentService.deleteComment(commentId);
+    }
 
 
 
