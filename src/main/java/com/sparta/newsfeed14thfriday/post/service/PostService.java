@@ -1,6 +1,7 @@
 package com.sparta.newsfeed14thfriday.post.service;
 
 import com.sparta.newsfeed14thfriday.post.dto.request.PostSaveRequestDto;
+import com.sparta.newsfeed14thfriday.post.dto.response.PostDetailResponseDto;
 import com.sparta.newsfeed14thfriday.post.dto.response.PostSaveResponseDto;
 import com.sparta.newsfeed14thfriday.post.entity.Post;
 import com.sparta.newsfeed14thfriday.post.repository.PostRepository;
@@ -36,6 +37,20 @@ public class PostService {
             "created",
             201,
             savedPost.getPostId()
+        );
+    }
+
+    public PostDetailResponseDto getPost(Long postId) {
+        Post post = postRepository.findByPostId(postId).orElseThrow(() -> new NullPointerException("Post not found."));
+
+        return new PostDetailResponseDto(
+            post.getPostId(),
+            post.getTitle(),
+            post.getContents(),
+            post.getCommentCount(),
+            post.getPostLikeCount(),
+            post.getCreateAt(),
+            post.getModifiedAt()
         );
     }
 }
