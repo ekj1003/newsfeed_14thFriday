@@ -116,7 +116,7 @@ public class CommentService {
 //            throw new IllegalArgumentException("Email not match");
 //        }
 
-        commentRepository.deleteCommentById(commentId);
+        commentRepository.deleteByCommentId(commentId);
 
     }
 
@@ -138,7 +138,7 @@ public class CommentService {
 //    }
 
     public Comment findCommentById(Long commentId){
-        Comment comment = commentRepository.findCommentById(commentId)
+        Comment comment = commentRepository.findByCommentId(commentId)
                 .orElseThrow(() -> new NullPointerException("Comment not found"));
 
         return comment;

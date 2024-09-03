@@ -4,4 +4,7 @@ import lombok.Getter;
 
 @Getter
 public class CommentLikeResponseDto {
+
+    private Long commentLikeId;
+
 }
