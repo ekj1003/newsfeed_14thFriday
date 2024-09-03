@@ -30,7 +30,7 @@ public class User extends Timestamped {
     //기본값은 false true 상태라면 삭제된 상태입니다.
     private boolean deleted = false;
 
-    private Long friendsCount;
+    private Long friendsCount = 0L; // 친구 수를 0으로 초기화
 
     @OneToMany(mappedBy = "UsersFriend")
     private List<Friend> friends = new ArrayList<>();
