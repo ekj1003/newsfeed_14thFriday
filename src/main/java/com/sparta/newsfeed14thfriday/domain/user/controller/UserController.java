@@ -29,16 +29,16 @@ public class UserController {
     }
     // 로그인
     @PostMapping("/login")
-    public String login(@RequestBody LoginRequestDto requestDto, HttpServletResponse res) {
+    public ApiResponse<String> login(@RequestBody LoginRequestDto requestDto, HttpServletResponse res) {
         try {
             userService.login(requestDto, res);
         } catch (Exception e) {
-            return "아이디 또는 비밀번호가 잘못 되었습니다. 아이디와 비밀번호를 정확히 입력해 주세요.";
+            return ApiResponse.createError("아이디 또는 비밀번호가 잘못 되었습니다. 아이디와 비밀번호를 정확히 입력해 주세요.",
+                    HttpStatus.BAD_REQUEST.value());
         }
 
-        return "로그인에 성공했습니다. 환영합니다!";
+        return ApiResponse.createSuccess("로그인에 성공했습니다. 환영합니다!",HttpStatus.CREATED.value(),null);
     }
-
     //유저의 이메일을 기반으로 유저 정보를 조회합니다.
     @GetMapping("/{userEmail}/profile")
     public ApiResponse<UserProfileResponseDto> getProfile(@PathVariable String userEmail) {
