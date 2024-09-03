@@ -4,6 +4,7 @@ import com.sparta.newsfeed14thfriday.domain.user.dto.SignupRequestDto;
 import com.sparta.newsfeed14thfriday.domain.user.dto.SignupResponseDto;
 import com.sparta.newsfeed14thfriday.domain.user.entity.User;
 import com.sparta.newsfeed14thfriday.domain.user.repository.UserRepository;
+import com.sparta.newsfeed14thfriday.exception.DuplicateEmailException;
 import com.sparta.newsfeed14thfriday.global.config.PasswordEncoder;
 import com.sparta.newsfeed14thfriday.global.jwt.JwtUtil;
 import org.springframework.stereotype.Service;
@@ -43,7 +44,8 @@ public class UserService {
         String email = requestDto.getEmail();
         Optional<User> checkEmail = userRepository.findByEmail(email);
         if (checkEmail.isPresent()) {
-            throw new IllegalArgumentException("중복된 Email 입니다.");
+            //이메일 중복시 이메일 중복 예외처리
+            throw new DuplicateEmailException();
         }
 
         User user = new User(username, password, email);
