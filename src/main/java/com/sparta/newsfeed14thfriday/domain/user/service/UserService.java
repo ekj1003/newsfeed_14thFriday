@@ -7,10 +7,10 @@ import com.sparta.newsfeed14thfriday.exception.DuplicateEmailException;
 import com.sparta.newsfeed14thfriday.exception.EmailNotFoundException;
 import com.sparta.newsfeed14thfriday.global.config.PasswordEncoder;
 import com.sparta.newsfeed14thfriday.global.jwt.JwtUtil;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Optional;
 
@@ -51,6 +51,24 @@ public class UserService {
         User user = new User(username, password, email);
         userRepository.save(user);
         return new SignupResponseDto(user);
+    }
+    public void login(LoginRequestDto requestDto, HttpServletResponse res) {
+        String email = requestDto.getEmail();
+        String password = requestDto.getPassword();
+
+        // 사용자 확인
+        User user = userRepository.findByEmail(email).orElseThrow(
+                () -> new IllegalArgumentException("등록된 사용자가 없습니다.")
+        );
+
+        // 비밀번호 확인
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+
+        // JWT 생성 및 쿠키에 저장 후 Response 객체에 추가
+        String token = jwtUtil.createToken(user.getEmail());
+        jwtUtil.addJwtToCookie(token, res);
     }
 
     public UserProfileResponseDto getProfile(String userEmail) {
