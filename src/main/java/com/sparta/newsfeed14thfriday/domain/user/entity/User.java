@@ -49,4 +49,8 @@ public class User extends Timestamped {
     public void deleteUser(){
         this.deleted = true;
     }
+
+    public void updatePassword(String password) {
+        this.password = password;
+    }
 }
