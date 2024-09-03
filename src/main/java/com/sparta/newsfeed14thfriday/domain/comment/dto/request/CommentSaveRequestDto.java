@@ -1,9 +1,9 @@
-package com.sparta.newsfeed14thfriday.domain.comment.dto;
+package com.sparta.newsfeed14thfriday.domain.comment.dto.request;
 
 import lombok.Getter;
 
 @Getter
-public class CommentRequestDto {
+public class CommentSaveRequestDto {
 
     private long commentId;
     private String contents;
