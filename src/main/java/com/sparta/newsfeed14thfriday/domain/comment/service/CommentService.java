@@ -105,10 +105,10 @@ public class CommentService {
     }
 
 
-    public void deleteComment(Long commentId , CommentUpdateRequestDto commentUpdateRequestDto){
+    public void deleteComment(Long commentId , CommentDeleteRequestDto commentDeleteRequestDto){
         Comment comment = findCommentById(commentId);
 
-        User email = userRepository.findByEmail(commentUpdateRequestDto.getEmail())
+        User email = userRepository.findByEmail(commentDeleteRequestDto.getEmail())
                 .orElseThrow(()-> new NullPointerException("User not found"));
 
         // 가독성을 위해서 이름 바꾸는거 생각
@@ -116,7 +116,7 @@ public class CommentService {
             throw new IllegalArgumentException("Email not match");
         }
 
-        commentRepository.deleteById(commentId);
+        commentRepository.deleteCommentById(commentId);
 
     }
 
@@ -138,7 +138,7 @@ public class CommentService {
 //    }
 
     public Comment findCommentById(Long commentId){
-        Comment comment = commentRepository.findById(commentId)
+        Comment comment = commentRepository.findCommentById(commentId)
                 .orElseThrow(() -> new NullPointerException("Comment not found"));
 
         return comment;
