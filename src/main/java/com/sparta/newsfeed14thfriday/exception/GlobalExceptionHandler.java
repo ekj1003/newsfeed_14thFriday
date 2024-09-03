@@ -15,4 +15,10 @@ public class GlobalExceptionHandler {
         ApiResponse<?> response = ApiResponse.createError(e.getMessage(),HttpStatus.BAD_REQUEST.value());
         return response;
     }
+
+    @ExceptionHandler(DuplicateNameException.class)
+    public ApiResponse<?> duplicateNameException(DuplicateNameException e) {
+        ApiResponse<?> response = ApiResponse.createError(e.getMessage(), HttpStatus.BAD_REQUEST.value());
+        return response;
+    }
 }

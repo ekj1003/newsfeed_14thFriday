@@ -20,8 +20,8 @@ public class User extends Timestamped {
 
     @Column(length = 50)
     private String statusMessage;
-
-    @Column(nullable = false,length = 50)
+    //이름,이메일은 중복이 불가하도록 수정
+    @Column(nullable = false,length = 50,unique = true)
     private String username;
 
     @Column(nullable = false,length = 200)
