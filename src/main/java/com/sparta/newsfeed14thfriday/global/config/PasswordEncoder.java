@@ -1,5 +1,6 @@
 package com.sparta.newsfeed14thfriday.global.config;
 import at.favre.lib.crypto.bcrypt.BCrypt;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Component

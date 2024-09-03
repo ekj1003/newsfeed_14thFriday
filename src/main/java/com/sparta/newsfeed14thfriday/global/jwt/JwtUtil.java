@@ -1,6 +1,5 @@
 package com.sparta.newsfeed14thfriday.global.jwt;
 
-import com.sparta.newsfeed14thfriday.domain.user.entity.UserRoleEnum;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -25,9 +24,6 @@ public class JwtUtil {
 
     // Header KEY 값, Cookie의 이름
     public static final String AUTHORIZATION_HEADER = "Authorization";
-
-    // 사용자 권한 값의 KEY <- 권한을 구분하여 가져오기 위함
-    public static final String AUTHORIZATION_KEY = "auth";
 
     // Token 식별자
     public static final String BEARER_PREFIX = "Bearer "; // 구분을 위해 뒤에 한칸 띄운다.
@@ -59,13 +55,12 @@ public class JwtUtil {
 
 
     // 2. JWT 토큰 생성
-    public String createToken(String username, UserRoleEnum role) {
+    public String createToken(String email) {
         Date date = new Date();
         // 암호화 되어 JWT 토큰을 만든다.
         return BEARER_PREFIX +
                 Jwts.builder()
-                        .setSubject(username) // 사용자 식별자값(ID)
-                        .claim(AUTHORIZATION_KEY, role) // 사용자 권한
+                        .setSubject(email) // 사용자 식별자값(ID)
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME)) // 만료 시간: 현재 시간 + 유지 시간
                         .setIssuedAt(date) // 발급일
                         .signWith(key, signatureAlgorithm) // 암호화 알고리즘

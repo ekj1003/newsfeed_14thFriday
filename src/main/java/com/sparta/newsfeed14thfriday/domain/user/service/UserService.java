@@ -1,6 +1,11 @@
 package com.sparta.newsfeed14thfriday.domain.user.service;
 
+
 import com.sparta.newsfeed14thfriday.domain.user.dto.*;
+
+import com.sparta.newsfeed14thfriday.domain.user.dto.LoginRequestDto;
+import com.sparta.newsfeed14thfriday.domain.user.dto.SignupRequestDto;
+import com.sparta.newsfeed14thfriday.domain.user.dto.SignupResponseDto;
 import com.sparta.newsfeed14thfriday.domain.user.entity.User;
 import com.sparta.newsfeed14thfriday.domain.user.repository.UserRepository;
 import com.sparta.newsfeed14thfriday.exception.DuplicateEmailException;
@@ -8,12 +13,15 @@ import com.sparta.newsfeed14thfriday.exception.EmailNotFoundException;
 import com.sparta.newsfeed14thfriday.global.config.PasswordEncoder;
 import com.sparta.newsfeed14thfriday.global.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Optional;
 
+@Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -53,6 +61,7 @@ public class UserService {
         return new SignupResponseDto(user);
     }
 
+
     public UserProfileResponseDto getProfile(String userEmail) {
         User user = findUserByEmail(userEmail);
         return new UserProfileResponseDto(user);
@@ -73,4 +82,24 @@ public class UserService {
     public User findUserByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow(EmailNotFoundException::new);
     }
+
+    public void login(LoginRequestDto requestDto, HttpServletResponse res) {
+        String email = requestDto.getEmail();
+        String password = requestDto.getPassword();
+
+        // 사용자 확인
+        User user = userRepository.findByEmail(email).orElseThrow(
+                () -> new IllegalArgumentException("등록된 사용자가 없습니다.")
+        );
+
+        // 비밀번호 확인
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+
+        // JWT 생성 및 쿠키에 저장 후 Response 객체에 추가
+        String token = jwtUtil.createToken(user.getEmail());
+        jwtUtil.addJwtToCookie(token, res);
+    }
+
 }
