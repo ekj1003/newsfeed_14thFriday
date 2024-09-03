@@ -1,6 +1,5 @@
 package com.sparta.newsfeed14thfriday.global.jwt;
 
-import com.sparta.newsfeed14thfriday.domain.user.entity.UserRoleEnum;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
