@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class PostSaveRequestDto {
-    private Long userId;
+    private String email;
     private String title;
     private String contents;
 }

@@ -1,6 +1,7 @@
 package com.sparta.newsfeed14thfriday.domain.post.entity;
 
 import com.sparta.newsfeed14thfriday.domain.post_like.entity.PostLike;
+import com.sparta.newsfeed14thfriday.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,14 +34,15 @@ public class Post extends Timestamped {
     private Long postLikeCount=0L;
 
     // 유저 아이디 FK
-//    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-//    @JoinColumn(name = "id", nullable = false)
-//    private User user;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "id", nullable = false)
+    private User user;
 
-    public static Post createNewPost(String title, String contents) {
+    public static Post createNewPost(String title, String contents, User user) {
         Post newPost = new Post();
         newPost.title = title;
         newPost.contents = contents;
+        newPost.user = user;
 
         return newPost;
     }

@@ -7,27 +7,31 @@ import com.sparta.newsfeed14thfriday.domain.post.dto.response.PostSaveResponseDt
 import com.sparta.newsfeed14thfriday.domain.post.dto.response.PostUpdateResponseDto;
 import com.sparta.newsfeed14thfriday.domain.post.entity.Post;
 import com.sparta.newsfeed14thfriday.domain.post.repository.PostRepository;
+import com.sparta.newsfeed14thfriday.domain.user.entity.User;
+import com.sparta.newsfeed14thfriday.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
-//    private final UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public PostSaveResponseDto createPost(PostSaveRequestDto data) {
         // 조회: 유저 존재 여부
-//        Optional<Users> foundUserOptional = userRepository.findById(data.getUserId())
-//            .orElseThrow(() -> new NullPointerException("User not found"));
-//        User foundUser = foundUserOptional.get();
+        User user = userRepository.findByEmail(data.getEmail())
+            .orElseThrow(() -> new NullPointerException("User not found"));
+
 
         // 생성: Post Entity
         Post newPost = Post.createNewPost(
-            //foundUser,
             data.getTitle(),
-            data.getContents()
+            data.getContents(),
+            user
         );
 
         // 저장: Post
