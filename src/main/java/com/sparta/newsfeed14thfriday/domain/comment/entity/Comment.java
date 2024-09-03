@@ -26,7 +26,7 @@ public class Comment extends Timestamped {
     private Boolean deleted = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "email", nullable = false)
+    @JoinColumn(name = "email", nullable = false, unique = true)
     private User email;
 
     @ManyToOne(fetch = FetchType.LAZY)
