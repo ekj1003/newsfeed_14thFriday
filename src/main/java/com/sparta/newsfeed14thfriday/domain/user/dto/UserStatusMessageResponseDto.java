@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public class UserStatusMessageResponseDto {
-    private String updatedStatusMessage;
+    private final String updatedStatusMessage;
 
     public UserStatusMessageResponseDto(String message) {
         this.updatedStatusMessage = message;

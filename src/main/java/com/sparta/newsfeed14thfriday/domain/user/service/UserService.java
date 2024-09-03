@@ -9,6 +9,7 @@ import com.sparta.newsfeed14thfriday.domain.user.dto.SignupResponseDto;
 import com.sparta.newsfeed14thfriday.domain.user.entity.User;
 import com.sparta.newsfeed14thfriday.domain.user.repository.UserRepository;
 import com.sparta.newsfeed14thfriday.exception.DuplicateEmailException;
+import com.sparta.newsfeed14thfriday.exception.DuplicateNameException;
 import com.sparta.newsfeed14thfriday.exception.EmailNotFoundException;
 import com.sparta.newsfeed14thfriday.global.config.PasswordEncoder;
 import com.sparta.newsfeed14thfriday.global.jwt.JwtUtil;
@@ -54,6 +55,13 @@ public class UserService {
             //이메일 중복시 이메일 중복 예외처리
             throw new DuplicateEmailException();
         }
+        //userName 중복확인, userName:unique=true;
+        String name = requestDto.getUsername();
+        Optional<User> checkUserName = userRepository.findByUsername(name);
+        if (checkUserName.isPresent()) {
+            //이름 중복시 이름 중복 예외처리
+            throw new DuplicateNameException();
+        }
 
         User user = new User(username, password, email);
         userRepository.save(user);
@@ -64,8 +72,18 @@ public class UserService {
         return new UserProfileResponseDto(user);
     }
     @Transactional
-    public UserProfileResponseDto updateProfile(String userEmail) {
-        return null;
+    //유저 이름변경
+    public UserProfileUpdateResponseDto updateProfile(String userEmail,UserProfileUpdateRequestDto requestDto) {
+        User user = findUserByEmail(userEmail);
+        String newName = requestDto.getUserName();
+        //이름중복검사
+        Optional<User> checkUserName = userRepository.findByUsername(newName);
+        if (checkUserName.isPresent()) {
+            //이름 중복시 이름 중복 예외처리
+            throw new DuplicateNameException();
+        }
+        user.updateUserName(newName);
+        return new UserProfileUpdateResponseDto(newName);
     }
     @Transactional
     public UserStatusMessageResponseDto updateStatusMessage(String userEmail, UserStatusMessageRequestDto requestDto) {

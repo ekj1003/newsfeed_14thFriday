@@ -47,9 +47,10 @@ public class UserController {
     }
     //유저의 정보를 수정합니다.
     @PutMapping("/{userEmail}/profile")
-    public ApiResponse<UserProfileResponseDto> updateProfile(@PathVariable String userEmail) {
-        UserProfileResponseDto  responseDto = userService.updateProfile(userEmail);
-        return ApiResponse.createSuccess("유저 프로필 업데이트 완료",HttpStatus.CREATED.value(), responseDto);
+    public ApiResponse<UserProfileUpdateResponseDto> updateProfile(@PathVariable String userEmail,
+                                                             @RequestBody UserProfileUpdateRequestDto requestDto) {
+        UserProfileUpdateResponseDto responseDto = userService.updateProfile(userEmail,requestDto);
+        return ApiResponse.createSuccess("유저 프로필 업데이트 완료",HttpStatus.CREATED.value(),responseDto);
     }
     //유저의 상태메시지를 수정합니다.
     @PutMapping("/{userEmail}/profile/statusMessage")
