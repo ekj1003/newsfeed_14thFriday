@@ -1,8 +1,15 @@
 package com.sparta.newsfeed14thfriday.domain.comment.controller;
 
 
+import com.sparta.newsfeed14thfriday.domain.comment.dto.request.CommentSaveRequestDto;
+import com.sparta.newsfeed14thfriday.domain.comment.dto.request.CommentUpdateRequestDto;
+import com.sparta.newsfeed14thfriday.domain.comment.dto.response.CommentDetailResponseDto;
+import com.sparta.newsfeed14thfriday.domain.comment.dto.response.CommentSaveResponseDto;
+import com.sparta.newsfeed14thfriday.domain.comment.dto.response.CommentUpdateResponseDto;
 import com.sparta.newsfeed14thfriday.domain.comment.service.CommentService;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 public class CommentController {
@@ -13,10 +20,25 @@ public class CommentController {
         this.commentService = commentService;
     }
 
-//    @PostMapping("/comments")
-//    public CommentResponseDto createComment(@RequestBody CommentRequestDto requestDto) {
-//        return commentService.createComment(requestDto);
-//    }
+    // 어느 포스트에 코멘트를 작성할건지 API 변경 필요
+    @PostMapping("/comments/{postId}")
+    public CommentSaveResponseDto createComment(@PathVariable Long postId, @RequestBody CommentSaveRequestDto commentSaveRequestDto) {
+        return commentService.createComment(postId, commentSaveRequestDto);
+    }
+
+    // 어느 포스트의 코멘트를 조회할건지 전체 조회 기능보다 이게 나을 듯?
+    @GetMapping("/comments/{postId}")
+    public List<CommentDetailResponseDto> getComments(@PathVariable Long postId) {
+        return commentService.getComments(postId);
+    }
+
+    // 어느 코멘트를 수정할지
+    @PutMapping("/comments/{commentId}")
+    public CommentUpdateResponseDto updateComment(@PathVariable Long commentId, @RequestBody CommentUpdateRequestDto commentUpdateRequestDto) {
+        return commentService.updateComment(commentId, commentUpdateRequestDto);
+    }
+
+
 
 
 

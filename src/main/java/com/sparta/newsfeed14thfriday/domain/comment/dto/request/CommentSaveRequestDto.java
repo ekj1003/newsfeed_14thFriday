@@ -10,7 +10,7 @@ public class CommentSaveRequestDto {
     private long commentLikeCount;
     private Boolean deleted;
 
-    private long userId;
+    private String email;
     private long postId;
 
 }

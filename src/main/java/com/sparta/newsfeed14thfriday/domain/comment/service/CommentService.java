@@ -34,11 +34,11 @@ public class CommentService {
 
 
     // service 에서 request , response 직접 다루지 말 것
-    public CommentSaveResponseDto createComment(Long userId, Long postId, CommentSaveRequestDto commentSaveRequestDto) {
+    public CommentSaveResponseDto createComment(Long postId, CommentSaveRequestDto commentSaveRequestDto) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NullPointerException("Post not found"));
 
-        User email = userRepository.findById(userId)
+        User email = userRepository.findByEmail(commentSaveRequestDto.getEmail())
                 .orElseThrow(() -> new NullPointerException("User not found"));
 
         Comment comment = new Comment(
@@ -89,12 +89,11 @@ public class CommentService {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new NullPointerException("Comment not found"));
 
-        // 유저를 이메일로 받으면서 정수형이 아니게 되서 오류 발생
-        // 일단 오류만 안나게 형변환 나중에 다시 확인
-        User user = userRepository.findById(Long.valueOf(commentUpdateRequestDto.getEmail()))
+        User email = userRepository.findByEmail(commentUpdateRequestDto.getEmail())
                 .orElseThrow(()-> new NullPointerException("User not found"));
 
-        if ((comment.getEmail() == null) || !ObjectUtils.nullSafeEquals(user.getEmail(), comment.getEmail().getEmail())){
+        // 가독성을 위해서 이름 바꾸는거 생각
+        if ((comment.getEmail() == null) || !ObjectUtils.nullSafeEquals(email.getEmail(), comment.getEmail().getEmail())){
             throw new IllegalArgumentException("Email not match");
         }
 
@@ -102,12 +101,30 @@ public class CommentService {
 
         return new CommentUpdateResponseDto(
                 comment.getCommentId(),
-                comment.getEmail(), // 여기 다시 확인
+                email,
                 comment.getContents(),
                 comment.getCommentLikeCount(),
                 comment.getCreatedAt(),
                 comment.getUpdatedAt()
         );
+    }
+
+
+    @Transactional
+    public void deleteComment(Long commentId , CommentUpdateRequestDto commentUpdateRequestDto) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new NullPointerException("Comment not found"));
+
+        User email = userRepository.findByEmail(commentUpdateRequestDto.getEmail())
+                .orElseThrow(()-> new NullPointerException("User not found"));
+
+        // 가독성을 위해서 이름 바꾸는거 생각
+        if ((comment.getEmail() == null) || !ObjectUtils.nullSafeEquals(email.getEmail(), comment.getEmail().getEmail())){
+            throw new IllegalArgumentException("Email not match");
+        }
+
+
+
     }
 
 
