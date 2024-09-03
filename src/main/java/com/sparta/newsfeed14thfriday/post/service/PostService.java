@@ -87,4 +87,20 @@ public class PostService {
             post.getPostId()
         );
     }
+
+    @Transactional
+    public void deletePost(Long postId) {
+        // 조회: postId, userId
+        Post post = postRepository.findByPostId(postId).orElseThrow(() -> new NullPointerException("Post not found."));
+//        User user = userRepository.findById(data.getUserId()).orElseThrow(() -> new NullPointerException("User not found."));
+//
+//        //작성자 일치 여부
+//        if(post.getUser() == null || !ObjectUtils.nullSafeEquals(user.getId(), post.getUser.getId())){
+//            throw new IllegalArgumentException("작성자가 일치하지않습니다.");
+//        } else{
+//            // delete
+//            postRepository.deleteByPostId(postId)
+//        }
+        postRepository.deleteByPostId(postId);
+    }
 }

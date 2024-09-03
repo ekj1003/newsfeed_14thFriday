@@ -45,7 +45,10 @@ public class PostController {
 
 
     // 게시물 삭제
-    //@DeleteMapping("/posts/{postId}")
+    @DeleteMapping("/posts/{postId}")
+    public void deleteUser(@PathVariable Long postId){
+        postService.deletePost(postId);
+    }
 
 
 
