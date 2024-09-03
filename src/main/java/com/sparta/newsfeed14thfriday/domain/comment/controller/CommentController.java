@@ -18,10 +18,10 @@ public class CommentController {
         this.commentService = commentService;
     }
 
-    @PostMapping("/comments")
-    public CommentResponseDto createComment(@RequestBody CommentRequestDto requestDto) {
-        return commentService.createComment(requestDto);
-    }
+//    @PostMapping("/comments")
+//    public CommentResponseDto createComment(@RequestBody CommentRequestDto requestDto) {
+//        return commentService.createComment(requestDto);
+//    }
 
 
 
