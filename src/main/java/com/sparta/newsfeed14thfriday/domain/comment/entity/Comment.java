@@ -27,24 +27,31 @@ public class Comment extends Timestamped {
     //기본값 false    true 상태라면 삭제된 상태
     private Boolean deleted = false;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User userId;
+    private User user;
 //
-//    @ManyToOne
+//    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "post_id")
-//    private Post postId;
+//    private Post post;
 
 
+
+//    public Comment(String contents , User user , long commentLikeCount){
+//        this.contents = contents;
+//        this.commentLikeCount = commentLikeCount;
+//        this.user = user;
+//    }
 
     public Comment(CommentRequestDto requestDto){
         this.contents = requestDto.getContents();
         this.commentLikeCount = requestDto.getCommentLikeCount();
+
     }
 
-    public void update(CommentRequestDto requestDto){
-        this.contents = requestDto.getContents();
-        this.commentLikeCount = requestDto.getCommentLikeCount();
+    public void update(String contents , long  commentLikeCount){
+        this.contents = contents;
+        this.commentLikeCount = commentLikeCount;
     }
 
 }
