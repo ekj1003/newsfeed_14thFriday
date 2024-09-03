@@ -17,10 +17,10 @@ public class CommentService {
     }
 
 
-    // service 에서 request , response 직접 다루지 말 것
-    public CommentResponseDto createComment(CommentRequestDto RequestDto) {
-
-    }
+//    // service 에서 request , response 직접 다루지 말 것
+//    public CommentResponseDto createComment(CommentRequestDto RequestDto) {
+//
+//    }
 
 
 
