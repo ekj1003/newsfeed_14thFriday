@@ -1,10 +1,13 @@
 package com.sparta.newsfeed14thfriday.post.controller;
 
 import com.sparta.newsfeed14thfriday.post.dto.request.PostSaveRequestDto;
+import com.sparta.newsfeed14thfriday.post.dto.request.PostUpdateRequestDto;
 import com.sparta.newsfeed14thfriday.post.dto.response.PostDetailResponseDto;
 import com.sparta.newsfeed14thfriday.post.dto.response.PostSaveResponseDto;
+import com.sparta.newsfeed14thfriday.post.dto.response.PostUpdateResponseDto;
 import com.sparta.newsfeed14thfriday.post.entity.Post;
 import com.sparta.newsfeed14thfriday.post.service.PostService;
+import jakarta.persistence.PostUpdate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +36,10 @@ public class PostController {
 
 
     // 게시물 수정
-    //@PutMapping("/posts/{postId}")
+    @PutMapping("/posts/{postId}")
+    public PostUpdateResponseDto updatePost(@PathVariable Long postId, @RequestBody PostUpdateRequestDto postUpdateRequestDto){
+        return postService.updatePost(postId, postUpdateRequestDto);
+    }
 
 
 
