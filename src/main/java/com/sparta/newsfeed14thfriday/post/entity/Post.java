@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Entity
 @NoArgsConstructor
@@ -18,6 +21,9 @@ public class Post extends Timestamped {
 
     @Column(length = 500, nullable = false)
     private String contents;
+
+//    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+//    private List<Comment> comments = new ArrayList<>();
 
     private Long commentCount;
     private Long postLikeCount;
