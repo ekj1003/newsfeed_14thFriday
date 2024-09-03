@@ -12,12 +12,14 @@ import java.util.List;
 @Getter
 @Entity
 @NoArgsConstructor
-@Table(name = "users")
 public class User extends Timestamped {
 
     @Id
     @Column(nullable = false,length = 50,unique = true)
     private String email;
+
+    @Column(length = 50)
+    private String statusMessage;
 
     @Column(nullable = false,length = 50)
     private String username;
@@ -37,5 +39,11 @@ public class User extends Timestamped {
         this.email = email;
         this.username = username;
         this.password = password;
+    }
+    public void updateUserName(String username) {
+        this.username = username;
+    }
+    public void updateStatusMessage(String statusMessage) {
+        this.statusMessage = statusMessage;
     }
 }
