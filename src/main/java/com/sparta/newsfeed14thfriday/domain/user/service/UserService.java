@@ -1,34 +1,38 @@
 package com.sparta.newsfeed14thfriday.domain.user.service;
 
+
+import com.sparta.newsfeed14thfriday.domain.user.dto.*;
+
 import com.sparta.newsfeed14thfriday.domain.user.dto.LoginRequestDto;
 import com.sparta.newsfeed14thfriday.domain.user.dto.SignupRequestDto;
 import com.sparta.newsfeed14thfriday.domain.user.dto.SignupResponseDto;
 import com.sparta.newsfeed14thfriday.domain.user.entity.User;
 import com.sparta.newsfeed14thfriday.domain.user.repository.UserRepository;
 import com.sparta.newsfeed14thfriday.exception.DuplicateEmailException;
+import com.sparta.newsfeed14thfriday.exception.EmailNotFoundException;
 import com.sparta.newsfeed14thfriday.global.config.PasswordEncoder;
 import com.sparta.newsfeed14thfriday.global.jwt.JwtUtil;
+import lombok.RequiredArgsConstructor;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Optional;
 
 @Slf4j
 @Service
+@Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtUtil = jwtUtil;
-    }
-
     // 회원 가입 구현
+    @Transactional
     public SignupResponseDto signup(SignupRequestDto requestDto) {
         String username = requestDto.getUsername(); // username 받아오기
 
@@ -55,6 +59,28 @@ public class UserService {
         User user = new User(username, password, email);
         userRepository.save(user);
         return new SignupResponseDto(user);
+    }
+
+
+    public UserProfileResponseDto getProfile(String userEmail) {
+        User user = findUserByEmail(userEmail);
+        return new UserProfileResponseDto(user);
+    }
+    @Transactional
+    public UserProfileResponseDto updateProfile(String userEmail) {
+        return null;
+    }
+    @Transactional
+    public UserStatusMessageResponseDto updateStatusMessage(String userEmail, UserStatusMessageRequestDto requestDto) {
+        User user = findUserByEmail(userEmail);
+        String newStatusMessage = requestDto.getStatusMessage();
+        user.updateStatusMessage(newStatusMessage);
+
+        return new UserStatusMessageResponseDto(newStatusMessage);
+    }
+
+    public User findUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(EmailNotFoundException::new);
     }
 
     public void login(LoginRequestDto requestDto, HttpServletResponse res) {
