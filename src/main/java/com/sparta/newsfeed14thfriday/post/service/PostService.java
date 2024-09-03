@@ -103,4 +103,9 @@ public class PostService {
 //        }
         postRepository.deleteByPostId(postId);
     }
+
+
+
+
+
 }
