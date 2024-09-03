@@ -7,5 +7,6 @@ public class CommentUpdateRequestDto {
 
     private String email;
     private String contents;
+    private Boolean deleted;
 
 }

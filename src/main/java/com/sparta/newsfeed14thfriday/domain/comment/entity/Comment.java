@@ -47,4 +47,8 @@ public class Comment extends Timestamped {
     }
 
 
+    public void deleteComment(){
+        this.deleted = true;
+    }
+
 }

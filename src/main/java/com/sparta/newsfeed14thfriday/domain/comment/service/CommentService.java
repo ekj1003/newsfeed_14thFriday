@@ -110,8 +110,7 @@ public class CommentService {
     }
 
 
-    @Transactional
-    public void deleteComment(Long commentId , CommentUpdateRequestDto commentUpdateRequestDto) {
+    public void deleteComment(Long commentId , CommentUpdateRequestDto commentUpdateRequestDto){
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new NullPointerException("Comment not found"));
 
@@ -123,9 +122,20 @@ public class CommentService {
             throw new IllegalArgumentException("Email not match");
         }
 
-
+        commentRepository.deleteById(commentId);
 
     }
+
+//    public boolean deleteComment(Long commentId) {
+//        Comment comment = commentRepository.findById(commentId)
+//                .orElseThrow(() -> new NullPointerException("Comment not found"));
+//
+//        if (comment.isDeleted()){
+//            return true;
+//        }
+//
+//        return false;
+//    }
 
 
 
