@@ -1,6 +1,7 @@
 package com.sparta.newsfeed14thfriday.domain.comment.service;
 
 
+import com.sparta.newsfeed14thfriday.domain.comment.dto.request.CommentDeleteRequestDto;
 import com.sparta.newsfeed14thfriday.domain.comment.dto.request.CommentSaveRequestDto;
 import com.sparta.newsfeed14thfriday.domain.comment.dto.request.CommentUpdateRequestDto;
 import com.sparta.newsfeed14thfriday.domain.comment.dto.response.CommentDetailResponseDto;
@@ -81,8 +82,7 @@ public class CommentService {
 
     @Transactional
     public CommentUpdateResponseDto updateComment(Long commentId, CommentUpdateRequestDto commentUpdateRequestDto){
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new NullPointerException("Comment not found"));
+        Comment comment = findCommentById(commentId);
 
         User email = userRepository.findByEmail(commentUpdateRequestDto.getEmail())
                 .orElseThrow(()-> new NullPointerException("User not found"));
@@ -106,8 +106,7 @@ public class CommentService {
 
 
     public void deleteComment(Long commentId , CommentUpdateRequestDto commentUpdateRequestDto){
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new NullPointerException("Comment not found"));
+        Comment comment = findCommentById(commentId);
 
         User email = userRepository.findByEmail(commentUpdateRequestDto.getEmail())
                 .orElseThrow(()-> new NullPointerException("User not found"));
@@ -121,16 +120,29 @@ public class CommentService {
 
     }
 
-//    public boolean deleteComment(Long commentId) {
-//        Comment comment = commentRepository.findById(commentId)
-//                .orElseThrow(() -> new NullPointerException("Comment not found"));
+
+//    @Transactional
+//    public void deleteComment(Long commentId, CommentDeleteRequestDto commentDeleteRequestDto){
+//        Comment comment = findCommentById(commentId);
 //
-//        if (comment.isDeleted()){
-//            return true;
+//        User email = userRepository.findByEmail(commentDeleteRequestDto.getEmail())
+//                .orElseThrow(()-> new NullPointerException("User not found"));
+//
+//        // 가독성을 위해서 이름 바꾸는거 생각
+//        if ((comment.getEmail() == null) || !ObjectUtils.nullSafeEquals(email.getEmail(), comment.getEmail().getEmail())){
+//            throw new IllegalArgumentException("Email not match");
 //        }
 //
-//        return false;
+//        comment.deleteComment();
+//
 //    }
+
+    public Comment findCommentById(Long commentId){
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new NullPointerException("Comment not found"));
+
+        return comment;
+    }
 
 
 

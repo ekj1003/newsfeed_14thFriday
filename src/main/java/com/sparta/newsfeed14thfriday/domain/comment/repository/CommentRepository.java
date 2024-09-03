@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
@@ -15,5 +16,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     // 다시 공부해 볼 것
     @Query("SELECT c FROM Comment c JOIN FETCH c.email WHERE c.post.postId = :postId")
     List<Comment> findByPostIdWithUser(@Param("postId") Long postId);
+
+    Optional<Comment> findCommentById(Long commentId);
 
 }
