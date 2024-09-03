@@ -6,6 +6,7 @@ import com.sparta.newsfeed14thfriday.domain.auth.dto.response.LoginResponseDto;
 import com.sparta.newsfeed14thfriday.domain.auth.dto.response.SignupResponseDto;
 import com.sparta.newsfeed14thfriday.domain.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,7 +27,8 @@ public class AuthController {
     // 로그인
     // 토큰 반환한다.
     @PostMapping("/auth/login")
-    public LoginResponseDto signin(@RequestBody LoginRequestDto loginRequestDto) {
+    public LoginResponseDto login(@RequestBody LoginRequestDto loginRequestDto) {
         return authService.login(loginRequestDto);
     }
+
 }
