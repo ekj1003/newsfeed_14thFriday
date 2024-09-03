@@ -52,7 +52,7 @@ public class CommentService {
                 savedComment.getCommentLikeCount(),
                 savedComment.getCreatedAt(),
                 savedComment.getUpdatedAt()
-                );
+                ); // 반환값 메세지 형태로 변경? id 유출보다 나을지도
 
     }
 
