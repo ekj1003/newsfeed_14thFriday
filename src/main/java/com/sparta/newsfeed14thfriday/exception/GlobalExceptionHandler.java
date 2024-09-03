@@ -26,4 +26,16 @@ public class GlobalExceptionHandler {
         ApiResponse<?> response = ApiResponse.createError(e.getMessage(), HttpStatus.NOT_FOUND.value());
         return response;
     }
+
+    @ExceptionHandler(AlreadyDeletedUserException.class)
+    public ApiResponse<?> alreadyDeletedUserException(AlreadyDeletedUserException e) {
+        ApiResponse<?> response = ApiResponse.createError(e.getMessage(), HttpStatus.CONFLICT.value());
+        return response;
+    }
+
+    @ExceptionHandler(EmailNotFoundException.class)
+    public ApiResponse<?> emailNotFoundException(EmailNotFoundException e) {
+        ApiResponse<?> response = ApiResponse.createError(e.getMessage(), HttpStatus.NOT_FOUND.value());
+        return response;
+    }
 }
