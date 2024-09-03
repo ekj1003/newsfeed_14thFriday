@@ -52,8 +52,8 @@ public class AuthService {
         User savedUser = userRepository.save(user);
 
         String bearerToken = jwtUtil.createToken(
-                savedUser.getUsername(),
-                savedUser.getEmail()
+                savedUser.getEmail(),
+                savedUser.getUsername()
         );
 
         return new SignupResponseDto(bearerToken);
