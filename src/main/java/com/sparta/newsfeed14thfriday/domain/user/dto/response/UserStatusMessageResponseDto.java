@@ -1,4 +1,4 @@
-package com.sparta.newsfeed14thfriday.domain.user.dto;
+package com.sparta.newsfeed14thfriday.domain.user.dto.response;
 
 import lombok.Getter;
 

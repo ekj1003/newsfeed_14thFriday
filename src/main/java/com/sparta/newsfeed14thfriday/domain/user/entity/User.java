@@ -46,4 +46,7 @@ public class User extends Timestamped {
     public void updateStatusMessage(String statusMessage) {
         this.statusMessage = statusMessage;
     }
+    public void deleteUser(){
+        this.deleted = true;
+    }
 }

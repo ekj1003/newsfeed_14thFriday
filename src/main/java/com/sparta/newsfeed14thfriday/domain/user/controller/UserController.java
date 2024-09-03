@@ -1,10 +1,11 @@
 package com.sparta.newsfeed14thfriday.domain.user.controller;
 
 
-import com.sparta.newsfeed14thfriday.domain.user.dto.*;
-import com.sparta.newsfeed14thfriday.domain.user.dto.LoginRequestDto;
-import com.sparta.newsfeed14thfriday.domain.user.dto.SignupRequestDto;
-import com.sparta.newsfeed14thfriday.domain.user.dto.SignupResponseDto;
+import com.sparta.newsfeed14thfriday.domain.user.dto.request.LoginRequestDto;
+import com.sparta.newsfeed14thfriday.domain.user.dto.request.SignupRequestDto;
+import com.sparta.newsfeed14thfriday.domain.user.dto.response.*;
+import com.sparta.newsfeed14thfriday.domain.user.dto.request.UserProfileUpdateRequestDto;
+import com.sparta.newsfeed14thfriday.domain.user.dto.request.UserStatusMessageRequestDto;
 import com.sparta.newsfeed14thfriday.domain.user.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import com.sparta.newsfeed14thfriday.entity_common.ApiResponse;
@@ -48,17 +49,23 @@ public class UserController {
     //유저의 정보를 수정합니다.
     @PutMapping("/{userEmail}/profile")
     public ApiResponse<UserProfileUpdateResponseDto> updateProfile(@PathVariable String userEmail,
-                                                             @RequestBody UserProfileUpdateRequestDto requestDto) {
+                                                                   @RequestBody UserProfileUpdateRequestDto requestDto) {
         UserProfileUpdateResponseDto responseDto = userService.updateProfile(userEmail,requestDto);
         return ApiResponse.createSuccess("유저 프로필 업데이트 완료",HttpStatus.CREATED.value(),responseDto);
     }
     //유저의 상태메시지를 수정합니다.
     @PutMapping("/{userEmail}/profile/statusMessage")
-    public ApiResponse<UserStatusMessageResponseDto> updateStatusMessage(@PathVariable String userEmail, @RequestBody
-    UserStatusMessageRequestDto requestDto) {
+    public ApiResponse<UserStatusMessageResponseDto> updateStatusMessage(
+            @PathVariable String userEmail,
+            @RequestBody UserStatusMessageRequestDto requestDto) {
         UserStatusMessageResponseDto responseDto = userService.updateStatusMessage(userEmail,requestDto);
         return ApiResponse.createSuccess("유저 상태 메시지 업데이트 완료",HttpStatus.CREATED.value(), responseDto);
 
+    }
+    @PutMapping("/{userEmail}")
+    public ApiResponse<String> deleteUser(@PathVariable String userEmail) {
+        userService.deleteUser(userEmail);
+        return ApiResponse.createSuccess("유저 삭제 완료",HttpStatus.CREATED.value(), null);
     }
 
 }

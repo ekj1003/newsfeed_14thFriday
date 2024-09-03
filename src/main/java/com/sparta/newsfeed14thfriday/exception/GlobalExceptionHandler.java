@@ -21,4 +21,9 @@ public class GlobalExceptionHandler {
         ApiResponse<?> response = ApiResponse.createError(e.getMessage(), HttpStatus.BAD_REQUEST.value());
         return response;
     }
+    @ExceptionHandler(DeletedUserIdException.class)
+    public ApiResponse<?> deletedUserIdException(DeletedUserIdException e) {
+        ApiResponse<?> response = ApiResponse.createError(e.getMessage(), HttpStatus.NOT_FOUND.value());
+        return response;
+    }
 }
