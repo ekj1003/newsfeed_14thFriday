@@ -4,9 +4,11 @@ import com.sparta.newsfeed14thfriday.domain.comment.entity.Comment;
 import com.sparta.newsfeed14thfriday.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
+@NoArgsConstructor
 public class CommentLike {
 
     @Id
@@ -27,6 +29,7 @@ public class CommentLike {
 
 //    public CommentLike() {
 //    } // 이거 없으면 public class CommentLike 에서 오류
+//    // @NoArgsConstructor 넣으면 해결 어느 방법이 좋을지?
 
     public CommentLike(Comment comment , User user) {
         this.comment = comment;

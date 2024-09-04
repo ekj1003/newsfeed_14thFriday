@@ -16,9 +16,11 @@ public class CommentLikeController {
     private final CommentLikeService commentLikeService;
 
 
-//    @PostMapping("/comments/{commentId}/likes")
-//    public CommentLikeResponseDto addCommentLike(@PathVariable Long commentId, @RequestBody CommentLikeRequestDto commentLikeRequestDto) {
-//        return commentLikeService.createCommentLike(commentId, commentLikeRequestDto);
-//    }
+    @PostMapping("/comments/{commentId}/likes")
+    public CommentLikeResponseDto addCommentLike(@PathVariable Long commentId, @PathVariable String userEmail, @RequestBody CommentLikeRequestDto commentLikeRequestDto) {
+        return commentLikeService.createCommentLike(commentId , userEmail, commentLikeRequestDto);
+    }
+
+
 
 }

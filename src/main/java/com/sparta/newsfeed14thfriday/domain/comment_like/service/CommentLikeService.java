@@ -10,6 +10,7 @@ import com.sparta.newsfeed14thfriday.domain.user.entity.User;
 import com.sparta.newsfeed14thfriday.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -44,6 +45,30 @@ public class CommentLikeService {
 
         // 확인 필요
         return new CommentLikeResponseDto(savedCommentLike.getCommentLikeId());
+
+    }
+
+
+    // 좋아요 취소
+    @Transactional
+    public void deleteCommentLike(Long commentId , String userEmail) {
+
+        Comment comment = commentRepository.findByCommentId(commentId)
+                .orElseThrow(()-> new NullPointerException("comment not found"));
+
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(()-> new NullPointerException("user not found"));
+
+        // 이미 좋아요 한 유저인지 확인
+        if (commentLikeRepository.findByCommentAndUser(comment,user).isPresent()){
+
+            commentLikeRepository.delete(commentLikeRepository.findByCommentAndUser(comment,user).get());
+
+            comment.deleteCommentLikeCount();
+
+        }
+
+        commentRepository.save(comment);
 
     }
 
