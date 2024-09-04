@@ -107,10 +107,16 @@ public class UserService {
 
 
     }
+    //- 비밀번호 수정 조건
+    //    - 비밀번호 수정 시, 본인 확인을 위해 현재 비밀번호를 입력하여 올바른 경우에만 수정할 수 있습니다.
+    //    - 현재 비밀번호와 동일한 비밀번호로는 변경할 수 없습니다.
+    //- 비밀번호 수정 시, 본인 확인을 위해 입력한 현재 비밀번호가 일치하지 않은 경우(O)
+    //- 비밀번호 형식이 올바르지 않은 경우(signupRequestDto 에서 해결)
+    //- 현재 비밀번호와 동일한 비밀번호로 수정하는 경우(O)
     @Transactional
     public void changePwd(String userEmail, UserChangePwdRequestDto requestDto) {
         User user = findUserByEmail(userEmail);
-        //옛날비밀번호와 현비밀번호가 맞으면 새로운비밀번호로 변경
+        //구비밀번호와 방금입력한 현비밀번호가 맞으면 새로운비밀번호로 변경
         if (!passwordEncoder.matches(requestDto.getOldPassword(), user.getPassword())) {
             throw new AuthException("현재 비밀번호와 유저의 비밀번호가 다릅니다.");
         }

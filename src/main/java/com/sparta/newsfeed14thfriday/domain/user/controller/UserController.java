@@ -22,6 +22,8 @@ public class UserController {
     private final UserService userService;
 
     //유저의 이메일을 기반으로 유저 정보를 조회합니다.
+    //필수 :- **프로필 조회 기능**
+    //    - 다른 사용자의 프로필 조회 시, 민감한 정보는 표시되지 않습니다.
     @GetMapping("/user-management/{userEmail}/profiles")
     public ApiResponse<UserProfileResponseDto> getProfile(@PathVariable String userEmail) {
         UserProfileResponseDto  responseDto = userService.getProfile(userEmail);
@@ -36,6 +38,9 @@ public class UserController {
         return userService.getUserPosts(page,size,userEmail);
     }
     //유저의 정보를 수정합니다.
+    //- 비밀번호 수정 조건
+    //    - 비밀번호 수정 시, 본인 확인을 위해 현재 비밀번호를 입력하여 올바른 경우에만 수정할 수 있습니다.
+    //    - 현재 비밀번호와 동일한 비밀번호로는 변경할 수 없습니다.
     @PutMapping("/user-management/{userEmail}/profiles")
     public ApiResponse<UserProfileUpdateResponseDto> updateProfile(@PathVariable String userEmail,
                                                                    @RequestBody UserProfileUpdateRequestDto requestDto) {
