@@ -25,8 +25,10 @@ public class CommentLike {
     private User userId;
 
 
-    public CommentLike() {
+    public CommentLike() {} // 이거 없으면 public class CommentLike 에서 오류
 
+    public CommentLike(Comment comment) {
+        this.commentId = comment;
     }
 
 

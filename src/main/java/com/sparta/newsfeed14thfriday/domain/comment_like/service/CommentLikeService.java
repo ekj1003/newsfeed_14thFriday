@@ -23,9 +23,12 @@ public class CommentLikeService {
                 .orElseThrow(()-> new NullPointerException("comment not found"));
 
         // 확인 필요
-        CommentLike commentLike = new CommentLike();
+        CommentLike commentLike = new CommentLike(comment);
 
         CommentLike savedCommentLike = commentLikeRepository.save(commentLike);
+
+        // 좋아요 증가
+        comment.updateCommentLikeCount();
 
         // 확인 필요
         return new CommentLikeResponseDto(savedCommentLike.getCommentLikeId());

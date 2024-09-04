@@ -20,7 +20,7 @@ public class Comment extends Timestamped {
     @Column(name = "contents", nullable = false, length = 500)
     private String contents;
 
-    private Long commentLikeCount;
+    private Long commentLikeCount = 0L;
 
     //기본값 false    true 상태라면 삭제된 상태
     private Boolean deleted = false;
@@ -49,6 +49,11 @@ public class Comment extends Timestamped {
 
     public void deleteComment(){
         this.deleted = true;
+    }
+
+
+    public void updateCommentLikeCount(){
+        this.commentLikeCount = this.commentLikeCount + 1;
     }
 
 }
