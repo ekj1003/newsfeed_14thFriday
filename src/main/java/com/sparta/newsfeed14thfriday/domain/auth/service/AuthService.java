@@ -70,8 +70,8 @@ public class AuthService {
         }
 
         String bearerToken = jwtUtil.createToken(
-                user.getUsername(),
-                user.getEmail()
+                user.getEmail(),
+                user.getUsername()
         );
 
         return new LoginResponseDto(bearerToken);
