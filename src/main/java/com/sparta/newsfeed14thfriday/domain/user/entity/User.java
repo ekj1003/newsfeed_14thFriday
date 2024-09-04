@@ -40,6 +40,7 @@ public class User extends Timestamped {
         this.email = email;
         this.username = username;
         this.password = password;
+        this.friendsCount = 0L;
     }
     public void updateUserName(String username) {
         this.username = username;

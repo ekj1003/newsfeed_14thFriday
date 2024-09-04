@@ -7,6 +7,7 @@ import com.sparta.newsfeed14thfriday.domain.user.dto.request.UserProfileUpdateRe
 import com.sparta.newsfeed14thfriday.domain.user.dto.request.UserStatusMessageRequestDto;
 import com.sparta.newsfeed14thfriday.domain.user.service.UserService;
 import com.sparta.newsfeed14thfriday.entity_common.ApiResponse;
+import com.sparta.newsfeed14thfriday.global.config.TokenUserEmail;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -25,8 +26,10 @@ public class UserController {
     //필수 :- **프로필 조회 기능**
     //    - 다른 사용자의 프로필 조회 시, 민감한 정보는 표시되지 않습니다.
     @GetMapping("/user-management/{userEmail}/profiles")
-    public ApiResponse<UserProfileResponseDto> getProfile(@PathVariable String userEmail) {
-        UserProfileResponseDto  responseDto = userService.getProfile(userEmail);
+    public ApiResponse<UserProfileResponseDto> getProfile(
+            @PathVariable String userEmail,
+            @TokenUserEmail String tokenEmail) {
+        UserProfileResponseDto  responseDto = userService.getProfile(tokenEmail,userEmail);
         log.info("유저 프로필 조회");
         return ApiResponse.createSuccess("유저 프로필 조회 완료", HttpStatus.CREATED.value(), responseDto);
     }
@@ -41,10 +44,12 @@ public class UserController {
     //- 비밀번호 수정 조건
     //    - 비밀번호 수정 시, 본인 확인을 위해 현재 비밀번호를 입력하여 올바른 경우에만 수정할 수 있습니다.
     //    - 현재 비밀번호와 동일한 비밀번호로는 변경할 수 없습니다.
-    @PutMapping("/user-management/{userEmail}/profiles")
-    public ApiResponse<UserProfileUpdateResponseDto> updateProfile(@PathVariable String userEmail,
-                                                                   @RequestBody UserProfileUpdateRequestDto requestDto) {
-        UserProfileUpdateResponseDto responseDto = userService.updateProfile(userEmail,requestDto);
+    @PutMapping("/user-management/{pathUserEmail}/profiles")
+    public ApiResponse<UserProfileUpdateResponseDto> updateProfile(
+            @PathVariable String pathUserEmail,
+            @TokenUserEmail String userEmail, //Token에서 쪼갠 claim에 존재하는 Email을 리턴받습니다.
+            @RequestBody UserProfileUpdateRequestDto requestDto) {
+        UserProfileUpdateResponseDto responseDto = userService.updateProfile(pathUserEmail,userEmail,requestDto);
         log.info("유저 정보 수정");
         return ApiResponse.createSuccess("유저 프로필 업데이트 완료",HttpStatus.CREATED.value(),responseDto);
     }
