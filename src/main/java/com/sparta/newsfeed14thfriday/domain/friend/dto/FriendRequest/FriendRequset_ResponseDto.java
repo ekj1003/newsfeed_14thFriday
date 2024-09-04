@@ -1,7 +1,9 @@
 package com.sparta.newsfeed14thfriday.domain.friend.dto.FriendRequest;
 
 import com.sparta.newsfeed14thfriday.domain.user.entity.User;
+import lombok.Getter;
 
+@Getter
 public class FriendRequset_ResponseDto {
     private final Long friend_id;
     private final User email;

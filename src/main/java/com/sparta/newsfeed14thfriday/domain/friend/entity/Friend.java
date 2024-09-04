@@ -13,12 +13,20 @@ public class Friend {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Friend_id;
+    @Column(name = "friend_id")
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "USER_EMAIL")
-    private User UsersFriend;
+    @JoinColumn(name = "user_email")
+    private User user;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "friend_email")
+    private User friend;
 
+    public Friend(User user, User friend) {
+        this.user = user;
+        this.friend = friend;
+    }
 
 }

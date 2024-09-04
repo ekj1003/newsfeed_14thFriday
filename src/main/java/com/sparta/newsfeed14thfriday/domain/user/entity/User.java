@@ -33,10 +33,12 @@ public class User extends Timestamped {
 
     private Long friendsCount = 0L; // 친구 수를 0으로 초기화
 
-    @OneToMany(mappedBy="user")
-    private List<Post> Posts = new ArrayList<>();
-    @OneToMany(mappedBy = "UsersFriend")
-    private List<Friend> friends = new ArrayList<>();
+    @OneToMany(mappedBy = "user") // 수정된 부분
+    private List<Post> posts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<Friend> friends = new ArrayList<>(); // 수정된 부분
+
 
     public User(String username, String password, String email) {
         this.email = email;
