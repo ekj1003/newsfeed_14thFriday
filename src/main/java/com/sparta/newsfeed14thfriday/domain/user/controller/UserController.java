@@ -21,14 +21,14 @@ public class UserController {
     private final UserService userService;
 
     //유저의 이메일을 기반으로 유저 정보를 조회합니다.
-    @GetMapping("/{userEmail}/profiles")
+    @GetMapping("/user-management/{userEmail}/profiles")
     public ApiResponse<UserProfileResponseDto> getProfile(@PathVariable String userEmail) {
         UserProfileResponseDto  responseDto = userService.getProfile(userEmail);
         log.info("유저 프로필 조회");
         return ApiResponse.createSuccess("유저 프로필 조회 완료", HttpStatus.CREATED.value(), responseDto);
     }
     //유저의 정보를 수정합니다.
-    @PutMapping("/{userEmail}/profiles")
+    @PutMapping("/user-management/{userEmail}/profiles")
     public ApiResponse<UserProfileUpdateResponseDto> updateProfile(@PathVariable String userEmail,
                                                                    @RequestBody UserProfileUpdateRequestDto requestDto) {
         UserProfileUpdateResponseDto responseDto = userService.updateProfile(userEmail,requestDto);
@@ -36,7 +36,7 @@ public class UserController {
         return ApiResponse.createSuccess("유저 프로필 업데이트 완료",HttpStatus.CREATED.value(),responseDto);
     }
     //유저의 상태메시지를 수정합니다.
-    @PutMapping("/{userEmail}/profiles/statusMessages")
+    @PutMapping("/user-management/{userEmail}/profiles/status-messages")
     public ApiResponse<UserStatusMessageResponseDto> updateStatusMessage(
             @PathVariable String userEmail,
             @RequestBody UserStatusMessageRequestDto requestDto) {
@@ -45,7 +45,8 @@ public class UserController {
         return ApiResponse.createSuccess("유저 상태 메시지 업데이트 완료",HttpStatus.CREATED.value(), responseDto);
 
     }
-    @PutMapping("/{userEmail}")
+    //유저를 삭제처리합니다.
+    @PutMapping("/user-management/{userEmail}/profiles/delete-account")
     public ApiResponse<String> deleteUser(@PathVariable String userEmail,@RequestBody UserDeleteRequestDto requestDto) {
         userService.deleteUser(userEmail,requestDto);
         log.info("유저 삭제");
