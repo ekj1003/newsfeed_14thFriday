@@ -1,5 +1,6 @@
 package com.sparta.newsfeed14thfriday.domain.post.service;
 
+import com.sparta.newsfeed14thfriday.domain.post.dto.request.PostDeleteDto;
 import com.sparta.newsfeed14thfriday.domain.post.dto.request.PostSaveRequestDto;
 import com.sparta.newsfeed14thfriday.domain.post.dto.request.PostUpdateRequestDto;
 import com.sparta.newsfeed14thfriday.domain.post.dto.response.PostDetailResponseDto;
@@ -96,10 +97,10 @@ public class PostService {
     }
 
     @Transactional
-    public void deletePost(Long postId, String email) {
+    public void deletePost(Long postId, PostDeleteDto postDeleteDto) {
         // 조회: postId, userId
         Post post = postRepository.findByPostId(postId).orElseThrow(() -> new NullPointerException("Post not found."));
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new NullPointerException("User not found."));
+        User user = userRepository.findByEmail(postDeleteDto.getEmail()).orElseThrow(() -> new NullPointerException("User not found."));
 
         //작성자 일치 여부
         if(post.getUser() == null || !ObjectUtils.nullSafeEquals(user.getEmail(), post.getUser().getEmail())){
