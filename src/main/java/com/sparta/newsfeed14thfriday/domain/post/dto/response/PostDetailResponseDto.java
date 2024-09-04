@@ -15,4 +15,5 @@ public class PostDetailResponseDto {
     private Long postLikeCount;
     private LocalDateTime createAt;
     private LocalDateTime modifiedAt;
+    private String writer;
 }
