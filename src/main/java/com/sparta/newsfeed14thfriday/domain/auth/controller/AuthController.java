@@ -28,7 +28,7 @@ public class AuthController {
     public LoginResponseDto login(@RequestBody LoginRequestDto loginRequestDto) {
         return authService.login(loginRequestDto);
     }
-
+    //유저복구
     @PutMapping("/auth/user-restoration")
     public void accountRestoration(@RequestBody AccountRestorationRequestDto requestDto) {
         authService.accountRestoration(requestDto);

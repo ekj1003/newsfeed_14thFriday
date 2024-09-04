@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.Set;
 
 @Getter
@@ -23,8 +24,10 @@ public class Post extends Timestamped {
     @Column(length = 500, nullable = false)
     private String contents;
 
-//    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
-//    private List<Comment> comments = new ArrayList<>();
+    @Column(length = 100, nullable = false)
+    private String writer;
+    //   @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+    //  private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private Set<PostLike> postLike;
@@ -38,14 +41,16 @@ public class Post extends Timestamped {
     @JoinColumn(name = "email", nullable = false)
     private User user;
 
-    public static Post createNewPost(String title, String contents, User user) {
+    public static Post createNewPost(String title, String contents,String writer, User user) {
         Post newPost = new Post();
         newPost.title = title;
         newPost.contents = contents;
         newPost.user = user;
+        newPost.writer = writer;
 
         return newPost;
     }
+
 
 
     public void update(String title, String contents) {
