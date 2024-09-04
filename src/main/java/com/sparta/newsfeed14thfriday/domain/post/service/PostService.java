@@ -46,7 +46,6 @@ public class PostService {
 
         // 저장: Post
         Post savedPost = postRepository.save(newPost);
-
         // 응답 반환
         return new PostSaveResponseDto(
             "created",
