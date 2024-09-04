@@ -1,4 +1,4 @@
-package com.sparta.newsfeed14thfriday.domain.friend.dto;
+package com.sparta.newsfeed14thfriday.domain.friend.dto.FriendList;
 
 import com.sparta.newsfeed14thfriday.domain.user.entity.User;
 
