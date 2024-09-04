@@ -12,6 +12,7 @@ import com.sparta.newsfeed14thfriday.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.util.Optional;
 
@@ -63,23 +64,18 @@ public class PostService {
     public PostUpdateResponseDto updatePost(Long postId, PostUpdateRequestDto postUpdateRequestDto) {
         // 조회: 게시물 존재 여부, 유저 존재 여부
         Post post = postRepository.findByPostId(postId).orElseThrow(() -> new NullPointerException("Post not found."));
-//        User user = userRepository.findById(data.getUserId()).orElseThrow(() -> new NullPointerException("User not found."));
-//
-//        //작성자 일치 여부
-//        if(post.getUser() == null || !ObjectUtils.nullSafeEquals(user.getId(), post.getUser.getId())){
-//            throw new IllegalArgumentException("작성자가 일치하지않습니다.");
-//        } else{
-//            // update
-//            post.update(
-//                data.getTitle(),
-//                data.getContents()
-//            );
-//        }
-        // update
-        post.update(
-            postUpdateRequestDto.getTitle(),
-            postUpdateRequestDto.getContents()
-        );
+        User user = userRepository.findByEmail(postUpdateRequestDto.getEmail()).orElseThrow(() -> new NullPointerException("User not found."));
+
+        //작성자 일치 여부
+        if(post.getUser() == null || !ObjectUtils.nullSafeEquals(user.getEmail(), post.getUser().getEmail())){
+            throw new IllegalArgumentException("작성자가 일치하지않습니다.");
+        } else{
+            // update
+            post.update(
+                postUpdateRequestDto.getTitle(),
+                postUpdateRequestDto.getContents()
+            );
+        }
         
         // 응답 반환
         return new PostUpdateResponseDto(

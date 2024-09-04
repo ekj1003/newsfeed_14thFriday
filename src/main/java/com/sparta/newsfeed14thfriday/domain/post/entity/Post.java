@@ -35,7 +35,7 @@ public class Post extends Timestamped {
 
     // 유저 아이디 FK
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "id", nullable = false)
+    @JoinColumn(name = "email", nullable = false)
     private User user;
 
     public static Post createNewPost(String title, String contents, User user) {

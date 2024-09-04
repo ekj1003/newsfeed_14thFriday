@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public class PostUpdateRequestDto {
     private Long postId;
-    private Long userId;
+    private String email;
     private String title;
     private String contents;
 }
