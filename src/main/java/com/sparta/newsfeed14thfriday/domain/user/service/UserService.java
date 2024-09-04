@@ -2,10 +2,13 @@ package com.sparta.newsfeed14thfriday.domain.user.service;
 
 
 import com.sparta.newsfeed14thfriday.domain.auth.exception.AuthException;
+import com.sparta.newsfeed14thfriday.domain.post.entity.Post;
+import com.sparta.newsfeed14thfriday.domain.post.repository.PostRepository;
 import com.sparta.newsfeed14thfriday.domain.user.dto.request.UserChangePwdRequestDto;
 import com.sparta.newsfeed14thfriday.domain.user.dto.request.UserDeleteRequestDto;
 import com.sparta.newsfeed14thfriday.domain.user.dto.request.UserProfileUpdateRequestDto;
 import com.sparta.newsfeed14thfriday.domain.user.dto.request.UserStatusMessageRequestDto;
+import com.sparta.newsfeed14thfriday.domain.user.dto.response.UserGetPostsResponseDto;
 import com.sparta.newsfeed14thfriday.domain.user.dto.response.UserProfileResponseDto;
 import com.sparta.newsfeed14thfriday.domain.user.dto.response.UserProfileUpdateResponseDto;
 import com.sparta.newsfeed14thfriday.domain.user.dto.response.UserStatusMessageResponseDto;
@@ -19,9 +22,15 @@ import com.sparta.newsfeed14thfriday.exception.EmailNotFoundException;
 import com.sparta.newsfeed14thfriday.global.config.PasswordEncoder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -32,6 +41,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final PostRepository postRepository;
 
     //유저 단건 조회
     public UserProfileResponseDto getProfile(String userEmail) {
@@ -110,5 +120,14 @@ public class UserService {
 
         String password = passwordEncoder.encode(requestDto.getNewPassword());
         user.updatePassword(password);
+    }
+    //특정유저의 포스트 페이징처리 전체조회.
+    public Page<UserGetPostsResponseDto> getUserPosts(int page,int size,String userEmail) {
+        User user = findUserByEmail(userEmail);
+        String name = user.getUsername();
+        Pageable pageable = PageRequest.of(page-1,size);
+        Page<Post> posts = postRepository.findByWriterOrderByModifiedAtDesc(name,pageable);
+
+        return posts.map(post -> new UserGetPostsResponseDto(post));
     }
 }

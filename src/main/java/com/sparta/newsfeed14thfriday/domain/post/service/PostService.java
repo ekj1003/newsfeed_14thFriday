@@ -4,12 +4,19 @@ import com.sparta.newsfeed14thfriday.domain.post.dto.request.PostSaveRequestDto;
 import com.sparta.newsfeed14thfriday.domain.post.dto.request.PostUpdateRequestDto;
 import com.sparta.newsfeed14thfriday.domain.post.dto.response.PostDetailResponseDto;
 import com.sparta.newsfeed14thfriday.domain.post.dto.response.PostSaveResponseDto;
+import com.sparta.newsfeed14thfriday.domain.post.dto.response.PostSimpleResponseDto;
 import com.sparta.newsfeed14thfriday.domain.post.dto.response.PostUpdateResponseDto;
 import com.sparta.newsfeed14thfriday.domain.post.entity.Post;
 import com.sparta.newsfeed14thfriday.domain.post.repository.PostRepository;
+import com.sparta.newsfeed14thfriday.domain.user.dto.response.UserGetPostsResponseDto;
 import com.sparta.newsfeed14thfriday.domain.user.entity.User;
 import com.sparta.newsfeed14thfriday.domain.user.repository.UserRepository;
+import com.sparta.newsfeed14thfriday.exception.DeletedUserIdException;
+import com.sparta.newsfeed14thfriday.exception.EmailNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
@@ -29,9 +36,11 @@ public class PostService {
 
 
         // 생성: Post Entity
+        // 포스트를 생성할때 유저네임을 생성할때 넣는것으로 변경 -> 게시물을 찾을때 유저네임으로 찾으려고
         Post newPost = Post.createNewPost(
             data.getTitle(),
             data.getContents(),
+            user.getUsername(),
             user
         );
 
@@ -56,7 +65,8 @@ public class PostService {
             post.getCommentCount(),
             post.getPostLikeCount(),
             post.getCreateAt(),
-            post.getModifiedAt()
+            post.getModifiedAt(),
+                post.getWriter()
         );
     }
 
@@ -104,7 +114,20 @@ public class PostService {
     }
 
 
+    public Page<PostSimpleResponseDto> getPosts(int page, int size, String userEmail) {
+        User user = findUserByEmail(userEmail);
+        String name = user.getUsername();
+        Pageable pageable = PageRequest.of(page-1,size);
+        Page<Post> posts = postRepository.findByWriterOrderByModifiedAtDesc(name,pageable);
 
+        return posts.map(post -> new PostSimpleResponseDto(post));
+    }
 
-
+    public User findUserByEmail(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(EmailNotFoundException::new);
+        if (user.isDeleted()) {
+            throw new DeletedUserIdException();
+        }
+        return user;
+    }
 }

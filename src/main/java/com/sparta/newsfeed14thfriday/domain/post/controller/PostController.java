@@ -4,9 +4,11 @@ import com.sparta.newsfeed14thfriday.domain.post.dto.request.PostSaveRequestDto;
 import com.sparta.newsfeed14thfriday.domain.post.dto.request.PostUpdateRequestDto;
 import com.sparta.newsfeed14thfriday.domain.post.dto.response.PostDetailResponseDto;
 import com.sparta.newsfeed14thfriday.domain.post.dto.response.PostSaveResponseDto;
+import com.sparta.newsfeed14thfriday.domain.post.dto.response.PostSimpleResponseDto;
 import com.sparta.newsfeed14thfriday.domain.post.dto.response.PostUpdateResponseDto;
 import com.sparta.newsfeed14thfriday.domain.post.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -30,6 +32,13 @@ public class PostController {
 
     // 게시물 전체 조회(page) -> notion API 추가필요
     //@GetMapping("/posts")
+    @GetMapping("/posts/users/{userEmail}")
+    public Page<PostSimpleResponseDto> getPosts(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10")int size,
+            @PathVariable String userEmail) {
+        return postService.getPosts(page,size,userEmail);
+    }
 
 
 
