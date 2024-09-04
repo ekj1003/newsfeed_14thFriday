@@ -14,14 +14,15 @@ public class CommentLike {
     @Column(name = ("comment_like_id"))
     private Long commentLikeId;
 
+    // 어느 comment에 좋아요를 할지
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "comment_id", nullable = false)
-    private Comment comment;
+    private Comment commentId;
 
     // 누가 좋어요를 했는지  user 필요?
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private User userId;
 
 
     public CommentLike() {

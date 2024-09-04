@@ -16,7 +16,7 @@ public class CommentLikeService {
     private final CommentRepository commentRepository;
 
 
-    public void createCommentLike(Long commentId) {
+    public void createCommentLike(Long commentId , Long userId) {
 
 
 
