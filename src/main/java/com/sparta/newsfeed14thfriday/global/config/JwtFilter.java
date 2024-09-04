@@ -67,10 +67,11 @@ public class JwtFilter implements Filter {
         } catch (IllegalArgumentException e) {
             log.error("JWT claims is empty, 잘못된 JWT 토큰 입니다.", e);
             httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "잘못된 JWT 토큰입니다.");
-        } catch (Exception e) {
-            log.error("JWT 토큰 검증 중 오류가 발생했습니다.", e);
-            httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT 토큰 검증 중 오류가 발생했습니다.");
         }
+//        catch (Exception e) {
+//            log.error("JWT 토큰 검증 중 오류가 발생했습니다.", e);
+//            httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "JWT 토큰 검증 중 오류가 발생했습니다.");
+//        }
     }
 
     @Override
