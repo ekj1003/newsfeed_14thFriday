@@ -1,5 +1,6 @@
 package com.sparta.newsfeed14thfriday.domain.comment_like.service;
 
+import com.sparta.newsfeed14thfriday.domain.comment.entity.Comment;
 import com.sparta.newsfeed14thfriday.domain.comment.repository.CommentRepository;
 import com.sparta.newsfeed14thfriday.domain.comment_like.dto.request.CommentLikeRequestDto;
 import com.sparta.newsfeed14thfriday.domain.comment_like.dto.response.CommentLikeResponseDto;
@@ -16,9 +17,18 @@ public class CommentLikeService {
     private final CommentRepository commentRepository;
 
 
-    public void createCommentLike(Long commentId , Long userId) {
+    public CommentLikeResponseDto createCommentLike(Long commentId , CommentLikeRequestDto commentLikeRequestDto) {
 
+        Comment comment = commentRepository.findByCommentId(commentId)
+                .orElseThrow(()-> new NullPointerException("comment not found"));
 
+        // 확인 필요
+        CommentLike commentLike = new CommentLike();
+
+        CommentLike savedCommentLike = commentLikeRepository.save(commentLike);
+
+        // 확인 필요
+        return new CommentLikeResponseDto(savedCommentLike.getCommentLikeId());
 
     }
 

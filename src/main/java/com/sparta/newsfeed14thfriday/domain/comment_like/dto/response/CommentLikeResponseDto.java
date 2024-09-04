@@ -7,4 +7,8 @@ public class CommentLikeResponseDto {
 
     private Long commentLikeId;
 
+    public CommentLikeResponseDto(Long commentLikeId) {
+        this.commentLikeId = commentLikeId;
+    }
+
 }
