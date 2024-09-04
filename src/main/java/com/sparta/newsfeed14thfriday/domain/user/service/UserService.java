@@ -29,8 +29,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -44,15 +42,30 @@ public class UserService {
     private final PostRepository postRepository;
 
     //유저 단건 조회
-    public UserProfileResponseDto getProfile(String userEmail) {
+    public UserProfileResponseDto getProfile(String tokenEmail,String userEmail) {
         User user = findUserByEmail(userEmail);
-        return new UserProfileResponseDto(user);
+        if (!userEmail.equals(tokenEmail)) {
+            log.info("유저데이터심플");
+            return new UserProfileResponseDto(user,"simple");
+        }
+        log.info("유저데이터디테일");
+        return new UserProfileResponseDto(user,"detail");
     }
 
     @Transactional
     //유저 이름변경
-    public UserProfileUpdateResponseDto updateProfile(String userEmail, UserProfileUpdateRequestDto requestDto) {
+    //게시물 수정, 삭제는 작성자 본인만 처리할 수 있습니다. jwt토큰으로 해결하는방법을찾아보자.
+    //문제 해결
+    //작성자가 아닌 다른 사용자가 게시물 수정 -> @Pathvariable로 받은 PathUserEmail과 userEmail이 같을때만 수정할수 있도록 수정했습니다!!
+    // , 삭제를 시도하는 경우 예외처리를하자
+    public UserProfileUpdateResponseDto updateProfile(String pathUserEmail,String userEmail, UserProfileUpdateRequestDto requestDto) {
+        //유저를찾습니다
         User user = findUserByEmail(userEmail);
+
+        //만약 토큰에서 가져온 userEmail과 PathVariable로 받은 유저이메일이 다르면 수정할 수 없습니다.
+        if(!pathUserEmail.equals(userEmail)){
+            throw new AuthException("권한이 없습니다");
+        }
         String newName = requestDto.getUserName();
         //이름중복검사
         Optional<User> checkUserName = userRepository.findByUsername(newName);
