@@ -9,6 +9,7 @@ import com.sparta.newsfeed14thfriday.domain.user.service.UserService;
 import com.sparta.newsfeed14thfriday.entity_common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +27,13 @@ public class UserController {
         UserProfileResponseDto  responseDto = userService.getProfile(userEmail);
         log.info("유저 프로필 조회");
         return ApiResponse.createSuccess("유저 프로필 조회 완료", HttpStatus.CREATED.value(), responseDto);
+    }
+    @GetMapping("/{userEmail}/posts")
+    public Page<UserGetPostsResponseDto> getUserPosts(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @PathVariable String userEmail) {
+        return userService.getUserPosts(page,size,userEmail);
     }
     //유저의 정보를 수정합니다.
     @PutMapping("/user-management/{userEmail}/profiles")
