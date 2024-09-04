@@ -19,7 +19,7 @@ public class CommentLikeController {
     }
 
 
-    @PutMapping("/posts/{postId}/comments/{commentId}/likes/delete")
+    @DeleteMapping("/posts/{postId}/comments/{commentId}/likes/delete")
     public void deleteCommentLike(@PathVariable Long commentId, @PathVariable Long postId, @RequestBody CommentLikeRequestDto commentLikeRequestDto) {
         commentLikeService.deleteCommentLike(commentId, postId, commentLikeRequestDto);
     }

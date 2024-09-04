@@ -38,7 +38,7 @@ public class CommentLikeService {
 
         // 이미 좋아요 한 유저인지 확인
         if (commentLikeRepository.findByCommentAndUserAndPost(comment,user,post).isPresent()){
-            throw new IllegalArgumentException("already like");
+            throw new IllegalArgumentException("already liked");
         }
 
         // 확인 필요

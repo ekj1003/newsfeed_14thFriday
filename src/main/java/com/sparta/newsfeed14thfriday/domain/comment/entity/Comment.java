@@ -58,7 +58,10 @@ public class Comment extends Timestamped {
 
 
     public void deleteCommentLikeCount(){
-        this.commentLikeCount = this.commentLikeCount - 1;
+        // 0일 경우 음수로 내려갈 위험 있음
+        if (this.commentLikeCount > 0){
+            this.commentLikeCount = this.commentLikeCount - 1;
+        }
     }
 
 
