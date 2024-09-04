@@ -39,10 +39,10 @@ public class CommentController {
         return commentService.updateComment(commentId, commentUpdateRequestDto);
     }
 
-    @DeleteMapping("/comments/{commentId}")
-    public void deleteComment(@PathVariable Long commentId) {
-        commentService.deleteComment(commentId);
-    }
+//    @DeleteMapping("/comments/{commentId}")
+//    public void deleteComment(@PathVariable Long commentId) {
+//        commentService.deleteComment(commentId);
+//    } // 아예 삭제하는 버전
 
     @PutMapping("/comments/delete/{commentId}")
     public void deleteCommentUpdate(@PathVariable Long commentId, @RequestBody CommentDeleteRequestDto commentDeleteRequestDto) {
