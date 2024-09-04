@@ -6,5 +6,7 @@ import lombok.Getter;
 public class CommentLikeRequestDto {
 
     private Long commentId;
+    private Long postId;
+    private String userEmail;
 
 }

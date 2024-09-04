@@ -6,6 +6,8 @@ import com.sparta.newsfeed14thfriday.domain.comment_like.dto.request.CommentLike
 import com.sparta.newsfeed14thfriday.domain.comment_like.dto.response.CommentLikeResponseDto;
 import com.sparta.newsfeed14thfriday.domain.comment_like.entity.CommentLike;
 import com.sparta.newsfeed14thfriday.domain.comment_like.repository.CommentLikeRepository;
+import com.sparta.newsfeed14thfriday.domain.post.entity.Post;
+import com.sparta.newsfeed14thfriday.domain.post.repository.PostRepository;
 import com.sparta.newsfeed14thfriday.domain.user.entity.User;
 import com.sparta.newsfeed14thfriday.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,24 +21,28 @@ public class CommentLikeService {
     private final CommentLikeRepository commentLikeRepository;
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
+    private final PostRepository postRepository;
 
 
-    // 누가 어느 댓글에 좋아요를 했는지   동일인이 좋아요를 여러번 하는거 방지
-    public CommentLikeResponseDto createCommentLike(Long commentId , String userEmail , CommentLikeRequestDto commentLikeRequestDto) {
+    // 누가 어느 포스트의 어느 댓글에 좋아요를 했는지   동일인이 좋아요를 여러번 하는거 방지
+    public CommentLikeResponseDto createCommentLike(Long commentId , Long postId, CommentLikeRequestDto commentLikeRequestDto) {
 
         Comment comment = commentRepository.findByCommentId(commentId)
                 .orElseThrow(()-> new NullPointerException("comment not found"));
 
-        User user = userRepository.findByEmail(userEmail)
+        User user = userRepository.findByEmail(commentLikeRequestDto.getUserEmail())
                 .orElseThrow(()-> new NullPointerException("user not found"));
 
+        Post post = postRepository.findById(postId)
+                .orElseThrow(()-> new NullPointerException("post not found"));
+
         // 이미 좋아요 한 유저인지 확인
-        if (commentLikeRepository.findByCommentAndUser(comment,user).isPresent()){
+        if (commentLikeRepository.findByCommentAndUserAndPost(comment,user,post).isPresent()){
             throw new IllegalArgumentException("already like");
         }
 
         // 확인 필요
-        CommentLike commentLike = new CommentLike(comment , user);
+        CommentLike commentLike = new CommentLike(comment , user , post);
 
         // 좋아요 증가
         comment.updateCommentLikeCount();
@@ -51,18 +57,22 @@ public class CommentLikeService {
 
     // 좋아요 취소
     @Transactional
-    public void deleteCommentLike(Long commentId , String userEmail) {
+    public void deleteCommentLike(Long commentId, Long postId, CommentLikeRequestDto commentLikeRequestDto) {
 
         Comment comment = commentRepository.findByCommentId(commentId)
                 .orElseThrow(()-> new NullPointerException("comment not found"));
 
-        User user = userRepository.findByEmail(userEmail)
+        User user = userRepository.findByEmail(commentLikeRequestDto.getUserEmail())
                 .orElseThrow(()-> new NullPointerException("user not found"));
 
-        // 이미 좋아요 한 유저인지 확인
-        if (commentLikeRepository.findByCommentAndUser(comment,user).isPresent()){
+        Post post = postRepository.findById(postId)
+                .orElseThrow(()-> new NullPointerException("post not found"));
 
-            commentLikeRepository.delete(commentLikeRepository.findByCommentAndUser(comment,user).get());
+
+        // 이미 좋아요 한 유저인지 확인
+        if (commentLikeRepository.findByCommentAndUserAndPost(comment,user,post).isPresent()){
+
+            commentLikeRepository.delete(commentLikeRepository.findByCommentAndUserAndPost(comment,user,post).get());
 
             comment.deleteCommentLikeCount();
 

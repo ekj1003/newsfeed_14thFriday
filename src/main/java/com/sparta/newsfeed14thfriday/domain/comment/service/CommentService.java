@@ -30,6 +30,9 @@ public class CommentService {
     private final UserRepository userRepository;
 
 
+    // 서비스에서 리퀘스트를 사용해서 받아올지 , String Email 등으로 받아서 사용할지 정해서 정리할 필요
+
+
     public CommentSaveResponseDto createComment(Long postId, CommentSaveRequestDto commentSaveRequestDto) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NullPointerException("Post not found"));
