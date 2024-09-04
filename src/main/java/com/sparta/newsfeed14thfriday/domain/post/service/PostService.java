@@ -1,5 +1,6 @@
 package com.sparta.newsfeed14thfriday.domain.post.service;
 
+import com.sparta.newsfeed14thfriday.domain.post.dto.request.PostPeriodRequestDto;
 import com.sparta.newsfeed14thfriday.domain.post.dto.request.PostSaveRequestDto;
 import com.sparta.newsfeed14thfriday.domain.post.dto.request.PostUpdateRequestDto;
 import com.sparta.newsfeed14thfriday.domain.post.dto.response.PostDetailResponseDto;
@@ -17,10 +18,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
@@ -118,6 +121,22 @@ public class PostService {
         Page<Post> posts = postRepository.findByWriterOrderByModifiedAtDesc(name,pageable);
 
         return posts.map(post -> new PostSimpleResponseDto(post));
+    }
+
+    // 기간별 게시물 검색
+    public Page<PostSimpleResponseDto> getPostsPeriod(int page, int size, PostPeriodRequestDto periodRequestDto) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createAt").descending());
+
+        LocalDate startDate = periodRequestDto.getStartDate();
+        LocalDate endDate = periodRequestDto.getEndDate();
+
+        Page<Post> postsPage = postRepository.findByCreateAtBetween(
+                startDate.atStartOfDay(),
+                endDate.atStartOfDay().plusDays(1).minusNanos(1),
+                pageable
+        );
+
+        return postsPage.map(post -> new PostSimpleResponseDto(post));
     }
 
     public User findUserByEmail(String email) {
