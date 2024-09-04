@@ -121,7 +121,7 @@ public class CommentService {
 //            throw new IllegalArgumentException("Email not match");
 //        }
 
-        commentRepository.deleteByCommentId(commentId);
+        commentRepository.deleteById(commentId);
 
     }
 
