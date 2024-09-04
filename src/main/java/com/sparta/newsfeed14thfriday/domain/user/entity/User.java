@@ -2,6 +2,7 @@ package com.sparta.newsfeed14thfriday.domain.user.entity;
 
 import com.sparta.newsfeed14thfriday.domain.friend.entity.Friend;
 import com.sparta.newsfeed14thfriday.domain.post.entity.Post;
+import com.sparta.newsfeed14thfriday.domain.post_like.entity.PostLike;
 import com.sparta.newsfeed14thfriday.entity_common.Timestamped;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -35,6 +36,9 @@ public class User extends Timestamped {
 
     @OneToMany(mappedBy="user")
     private List<Post> Posts = new ArrayList<>();
+
+    @OneToMany(mappedBy="user")
+    private List<PostLike> postLike = new ArrayList<>();
     @OneToMany(mappedBy = "UsersFriend")
     private List<Friend> friends = new ArrayList<>();
 
