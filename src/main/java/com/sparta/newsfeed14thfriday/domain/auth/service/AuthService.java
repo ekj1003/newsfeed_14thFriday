@@ -1,5 +1,6 @@
 package com.sparta.newsfeed14thfriday.domain.auth.service;
 
+import com.sparta.newsfeed14thfriday.domain.auth.dto.request.AccountRestorationRequestDto;
 import com.sparta.newsfeed14thfriday.domain.auth.dto.request.LoginRequestDto;
 import com.sparta.newsfeed14thfriday.domain.auth.dto.request.SignupRequestDto;
 import com.sparta.newsfeed14thfriday.domain.auth.dto.response.LoginResponseDto;
@@ -74,5 +75,19 @@ public class AuthService {
         );
 
         return new LoginResponseDto(bearerToken);
+    }
+    @Transactional
+    public void accountRestoration(AccountRestorationRequestDto requestDto) {
+        User user = userRepository.findByEmail(requestDto.getUserEmail())
+                .orElseThrow(() -> new AuthException("가입되지 않은 이메일입니다."));
+
+        if (!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
+            throw new AuthException("잘못된 비밀번호입니다.");
+        }
+        //유저가 삭제되었는지 확인
+        if(!user.isDeleted()) {
+            throw new AuthException("탈퇴하지 않은 회원입니다");
+        }
+        user.restoreUser();
     }
 }

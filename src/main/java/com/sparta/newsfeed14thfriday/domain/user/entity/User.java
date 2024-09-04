@@ -49,11 +49,15 @@ public class User extends Timestamped {
     public void updateStatusMessage(String statusMessage) {
         this.statusMessage = statusMessage;
     }
-    public void deleteUser(){
+    public void deleteUser() {
         this.deleted = true;
     }
 
     public void updatePassword(String password) {
         this.password = password;
+    }
+
+    public void restoreUser() {
+        this.deleted = false;
     }
 }

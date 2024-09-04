@@ -1,15 +1,13 @@
 package com.sparta.newsfeed14thfriday.domain.auth.controller;
 
+import com.sparta.newsfeed14thfriday.domain.auth.dto.request.AccountRestorationRequestDto;
 import com.sparta.newsfeed14thfriday.domain.auth.dto.request.LoginRequestDto;
 import com.sparta.newsfeed14thfriday.domain.auth.dto.request.SignupRequestDto;
 import com.sparta.newsfeed14thfriday.domain.auth.dto.response.LoginResponseDto;
 import com.sparta.newsfeed14thfriday.domain.auth.dto.response.SignupResponseDto;
 import com.sparta.newsfeed14thfriday.domain.auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,6 +27,11 @@ public class AuthController {
     @PostMapping("/auth/login")
     public LoginResponseDto login(@RequestBody LoginRequestDto loginRequestDto) {
         return authService.login(loginRequestDto);
+    }
+
+    @PutMapping("/auth/user-restoration")
+    public void accountRestoration(@RequestBody AccountRestorationRequestDto requestDto) {
+        authService.accountRestoration(requestDto);
     }
 
 }
