@@ -1,5 +1,6 @@
 package com.sparta.newsfeed14thfriday.domain.post.controller;
 
+import com.sparta.newsfeed14thfriday.domain.post.dto.request.PostPeriodRequestDto;
 import com.sparta.newsfeed14thfriday.domain.post.dto.request.PostSaveRequestDto;
 import com.sparta.newsfeed14thfriday.domain.post.dto.request.PostUpdateRequestDto;
 import com.sparta.newsfeed14thfriday.domain.post.dto.response.PostDetailResponseDto;
@@ -39,6 +40,22 @@ public class PostController {
             @PathVariable String userEmail) {
         return postService.getPosts(page,size,userEmail);
     }
+
+    // 기간별 게시물 검색 기능
+    //    {
+    //        "startDate": "2024-09-04",
+    //        "endDate": "2024-09-05"
+    //    }
+    // 형식으로 body를 보낼 경우 해당 기간 내에 생성된 게시물을
+    // 최신으로 생성된 순(createAt 기준 내림차순)으로 보여준다.
+    @GetMapping("/posts/period")
+    public Page<PostSimpleResponseDto> getPostsPeriod(
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10")int size,
+            @RequestBody PostPeriodRequestDto periodRequestDto) {
+        return postService.getPostsPeriod(page, size, periodRequestDto);
+    }
+
 
 
 
