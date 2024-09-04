@@ -64,10 +64,14 @@ public class CommentService {
 
         List<CommentDetailResponseDto> dtoList = new ArrayList<>();
         for (Comment comment : commentList) {
+
+            // deleted 를 가져와서 true면 "삭제된 댓글" 출력 , false면 댓글 내용 출력
+            String contents = comment.getDeleted() ? "삭제된 댓글" : comment.getContents();
+
             CommentDetailResponseDto dto = new CommentDetailResponseDto(
                     comment.getCommentId(),
                     comment.getEmail(),
-                    comment.getContents(),
+                    contents,
                     comment.getCommentLikeCount(),
                     comment.getCreatedAt(),
                     comment.getUpdatedAt()
@@ -134,6 +138,7 @@ public class CommentService {
             throw new IllegalArgumentException("Email not match");
         }
 
+        //
         comment.deleteComment();
 
     }
