@@ -44,7 +44,7 @@ public class CommentController {
         commentService.deleteComment(commentId);
     }
 
-    @PutMapping("/comments/{commentId}")
+    @PutMapping("/comments/delete/{commentId}")
     public void deleteCommentUpdate(@PathVariable Long commentId, @RequestBody CommentDeleteRequestDto commentDeleteRequestDto) {
         commentService.deleteCommentUpdate(commentId, commentDeleteRequestDto);
     }
