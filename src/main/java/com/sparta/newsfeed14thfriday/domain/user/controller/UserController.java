@@ -71,7 +71,7 @@ public class UserController {
         return ApiResponse.createSuccess("유저 삭제 완료",HttpStatus.CREATED.value(), null);
     }
 
-    @PutMapping("/{userEmail}/profiles/checked")
+    @PutMapping("/user-management/{userEmail}/profiles/checked")
     public ApiResponse<String> changePassword(@PathVariable String userEmail,@RequestBody UserChangePwdRequestDto requestDto) {
         userService.changePwd(userEmail,requestDto);
         log.info("유저 비밀번호 변경");
