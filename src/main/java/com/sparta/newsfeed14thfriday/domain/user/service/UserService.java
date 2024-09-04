@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 @Slf4j
 @Service
@@ -67,12 +68,6 @@ public class UserService {
             throw new AuthException("권한이 없습니다");
         }
         String newName = requestDto.getUserName();
-        //이름중복검사
-        Optional<User> checkUserName = userRepository.findByUsername(newName);
-        if (checkUserName.isPresent()) {
-            //이름 중복시 이름 중복 예외처리
-            throw new DuplicateNameException();
-        }
         user.updateUserName(newName);
         return new UserProfileUpdateResponseDto(newName);
     }
@@ -137,6 +132,12 @@ public class UserService {
             throw new AuthException("변경하려는 비밀번호는 현재 사용하는 비밀번호입니다.");
         }
 
+        // 최소 8자, 대소문자, 숫자, 특수문자 각각 최소 1개 포함
+        String passwordRegex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$";
+        boolean flag = Pattern.matches(passwordRegex, requestDto.getNewPassword());
+        if (!flag) {
+            throw new IllegalArgumentException("비밀번호는 최소 8자 이상이어야 하며, 대소문자 포함 영문, 숫자, 특수문자를 최소 1글자씩 포함해야 합니다.");
+        }
         String password = passwordEncoder.encode(requestDto.getNewPassword());
         user.updatePassword(password);
     }
