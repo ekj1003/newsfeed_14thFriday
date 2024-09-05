@@ -43,7 +43,7 @@ public class AuthService {
 
         // email 중복확인, email: unique=true
         String email = requestDto.getEmail();
-        Optional<User> checkEmail = userRepository.findByEmailAndDeleted(email,false);
+        Optional<User> checkEmail = userRepository.findByEmail(email);
         if (checkEmail.isPresent()) {
             throw new IllegalArgumentException("중복된 Email 입니다.");
         }
