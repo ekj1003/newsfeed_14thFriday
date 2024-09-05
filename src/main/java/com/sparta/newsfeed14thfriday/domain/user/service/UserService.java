@@ -147,7 +147,7 @@ public class UserService {
     public Page<UserGetPostsResponseDto> getUserPosts(int page,int size,String userEmail) {
         User user = findUserByEmail(userEmail);
         Pageable pageable = PageRequest.of(page-1,size);
-        Page<Post> posts = postRepository.findByUser_EmailOrderByUpdatedAtDesc(user.getEmail(),pageable);
+        Page<Post> posts = postRepository.findByUser_EmailAndDeletedFalseOrderByUpdatedAtDesc(user.getEmail(),pageable);
 
 
         return posts.map(post -> new UserGetPostsResponseDto(post));
@@ -164,7 +164,7 @@ public class UserService {
 
 
         List<String> friendsEmailsList = friends.stream().map(friend -> friend.getFriend().getEmail()).toList();
-        Page<Post> friendsPost = postRepository.findAllByUser_EmailIn(friendsEmailsList,pageable);
+        Page<Post> friendsPost = postRepository.findAllByUser_EmailInAndDeletedFalseOrderByUpdatedAt(friendsEmailsList,pageable);
 
         return friendsPost.map(post -> new UserNewsfeedResponseDto(post));
     }

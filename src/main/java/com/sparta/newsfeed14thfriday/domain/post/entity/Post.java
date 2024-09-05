@@ -29,6 +29,8 @@ public class Post extends Timestamped {
 
     private String writer;
 
+    private boolean deleted=false;
+
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<>();
 
@@ -62,6 +64,9 @@ public class Post extends Timestamped {
         this.contents = contents;
     }
 
+    public void delete(){
+        this.deleted=true;
+    }
     public void updatePostLikeCount() {
 
         this.postLikeCount = (this.postLikeCount == null ? 0L : postLikeCount) + 1;
