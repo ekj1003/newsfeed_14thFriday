@@ -87,7 +87,6 @@ public class FriendService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 이메일: " + userEmail));
         User friend = userRepository.findByEmail(friendEmail)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 친구 이메일: " + friendEmail));
-
         Friend friendRequest = friendRepository.findByUserAndFriend(user, friend)
                 .orElseThrow(() -> new IllegalArgumentException("친구 요청이 존재하지 않습니다: " + userEmail + "와 " + friendEmail));
 
@@ -127,10 +126,13 @@ public class FriendService {
         if(!userEmail.equals(token)){
             throw new AuthException("권한이 없습니다");
         }
-        Friend friendRequest = friendRepository.findByUserAndFriend(user, friend)
+        Friend friendRequest1 = friendRepository.findByUserAndFriend(user, friend)
+                .orElseThrow(() -> new IllegalArgumentException("친구 요청이 존재하지 않습니다: " + userEmail + "와 " + friendEmail));
+        Friend friendRequest2 = friendRepository.findByUserAndFriend(user, friend)
                 .orElseThrow(() -> new IllegalArgumentException("친구 요청이 존재하지 않습니다: " + userEmail + "와 " + friendEmail));
 
-        friendRepository.delete(friendRequest);  // 거절 시 데이터베이스에서 삭제
+        friendRepository.delete(friendRequest1);
+        friendRepository.delete(friendRequest2);// 거절 시 데이터베이스에서 삭제
     }
 
     // 친구 삭제
