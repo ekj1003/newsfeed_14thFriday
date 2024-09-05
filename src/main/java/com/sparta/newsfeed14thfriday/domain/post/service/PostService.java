@@ -62,8 +62,8 @@ public class PostService {
             post.getContents(),
             post.getCommentCount(),
             post.getPostLikeCount(),
-            post.getCreateAt(),
-            post.getModifiedAt(),
+            post.getCreatedAt(),
+            post.getUpdatedAt(),
                 post.getUser().getEmail()
 
 
