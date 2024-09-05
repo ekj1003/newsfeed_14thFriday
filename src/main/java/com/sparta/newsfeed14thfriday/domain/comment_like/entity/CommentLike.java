@@ -33,10 +33,6 @@ public class CommentLike {
     private Post post;
 
 
-//    public CommentLike() {
-//    } // 이거 없으면 public class CommentLike 에서 오류
-//    // @NoArgsConstructor 넣으면 해결 어느 방법이 좋을지?
-
     public CommentLike(Comment comment , User user , Post post) {
         this.comment = comment;
         this.user = user;
