@@ -5,7 +5,6 @@ import lombok.Getter;
 @Getter
 public class CommentSaveRequestDto {
 
-    private long commentId;
     private String contents;
 
     private String userEmail;

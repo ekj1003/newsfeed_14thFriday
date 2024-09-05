@@ -88,7 +88,7 @@ public class CommentService {
     public CommentUpdateResponseDto updateComment(Long commentId, CommentUpdateRequestDto commentUpdateRequestDto){
         Comment comment = findCommentById(commentId);
 
-        User email = userRepository.findByEmail(commentUpdateRequestDto.getEmail())
+        User email = userRepository.findByEmail(commentUpdateRequestDto.getUserEmail())
                 .orElseThrow(()-> new NullPointerException("User not found"));
 
         // 가독성을 위해서 이름 바꾸는거 생각
