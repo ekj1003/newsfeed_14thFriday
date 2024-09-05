@@ -16,9 +16,9 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Optional<Post> findByPostId(Long postId);
 
     void deleteByPostId(Long postId);
-    Page<Post> findByUser_EmailOrderByModifiedAtDesc(String Email, Pageable pageable);
+    Page<Post> findByUser_EmailOrderByUpdatedAtDesc(String Email, Pageable pageable);
 
-    Page<Post> findByCreateAtBetween(LocalDateTime startDateTime, LocalDateTime endDateTime, Pageable pageable);
+    Page<Post> findByCreatedAtBetween(LocalDateTime startDateTime, LocalDateTime endDateTime, Pageable pageable);
 
     Page<Post> findAllByUser_EmailIn(List<String> email, Pageable pageable);
 
