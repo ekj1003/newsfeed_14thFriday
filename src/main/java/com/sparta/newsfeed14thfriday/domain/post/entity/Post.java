@@ -36,7 +36,7 @@ public class Post extends Timestamped {
     private Long postLikeCount=0L;
 
     // 유저 아이디 FK
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "email", nullable = false)
     private User user;
 

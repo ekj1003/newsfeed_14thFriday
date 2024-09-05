@@ -103,13 +103,13 @@ public class PostService {
         User user = userRepository.findByEmail(postDeleteDto.getEmail()).orElseThrow(() -> new NullPointerException("User not found."));
 
         //작성자 일치 여부
-        if(post.getUser() == null || !ObjectUtils.nullSafeEquals(user.getEmail(), post.getUser().getEmail())){
+        if(!ObjectUtils.nullSafeEquals(user.getEmail(), post.getUser().getEmail())){
             throw new IllegalArgumentException("작성자가 일치하지않습니다.");
         } else{
             // delete
             postRepository.deleteByPostId(postId);
         }
-        postRepository.deleteByPostId(postId);
+        //postRepository.deleteByPostId(postId);
     }
 
 
