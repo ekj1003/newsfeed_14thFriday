@@ -43,7 +43,7 @@ public class AuthService {
 
         // email 중복확인, email: unique=true
         String email = requestDto.getEmail();
-        Optional<User> checkEmail = userRepository.findByEmail(email);
+        Optional<User> checkEmail = userRepository.findByEmailAndDeleted(email,false);
         if (checkEmail.isPresent()) {
             throw new IllegalArgumentException("중복된 Email 입니다.");
         }
@@ -62,7 +62,7 @@ public class AuthService {
 
 
     public LoginResponseDto login(LoginRequestDto loginRequestDto) {
-        User user = userRepository.findByEmail(loginRequestDto.getEmail())
+        User user = userRepository.findByEmailAndDeleted(loginRequestDto.getEmail(),false)
                 .orElseThrow(() -> new AuthException("가입되지 않은 이메일입니다."));
 
         if (!passwordEncoder.matches(loginRequestDto.getPassword(), user.getPassword())) {
@@ -78,7 +78,7 @@ public class AuthService {
     }
     @Transactional
     public void accountRestoration(AccountRestorationRequestDto requestDto) {
-        User user = userRepository.findByEmail(requestDto.getUserEmail())
+        User user = userRepository.findByEmailAndDeleted(requestDto.getUserEmail(),false)
                 .orElseThrow(() -> new AuthException("가입되지 않은 이메일입니다."));
 
         if (!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {

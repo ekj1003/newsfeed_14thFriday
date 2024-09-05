@@ -51,8 +51,10 @@ public class PostController {
 
     // 게시물 수정
     @PutMapping("/posts/{postId}")
-    public ApiResponse<PostUpdateResponseDto> updatePost(@TokenUserEmail String Token,
-            @PathVariable Long postId, @RequestBody PostUpdateRequestDto postUpdateRequestDto){
+    public ApiResponse<PostUpdateResponseDto> updatePost(
+            @TokenUserEmail String Token,
+            @PathVariable Long postId,
+            @RequestBody PostUpdateRequestDto postUpdateRequestDto){
         PostUpdateResponseDto responseDto = postService.updatePost(postId,Token, postUpdateRequestDto);
         return ApiResponse.createSuccess("게시물 수정 완료",HttpStatus.CREATED.value(),responseDto);
     }
@@ -62,8 +64,10 @@ public class PostController {
 
     // 게시물 삭제
     @DeleteMapping("/posts/{postId}")
-    public ApiResponse<String> deleteUser(@TokenUserEmail String Token,
-            @PathVariable Long postId, @RequestBody PostDeleteRequestDto postDeleteDto){
+    public ApiResponse<String> deleteUser(
+            @TokenUserEmail String Token,
+            @PathVariable Long postId,
+            @RequestBody PostDeleteRequestDto postDeleteDto){
         String message = "삭제 완료";
         postService.deletePost(Token,postId, postDeleteDto);
         return ApiResponse.createSuccess("게시물 삭제 완료,",HttpStatus.CREATED.value(),message);
