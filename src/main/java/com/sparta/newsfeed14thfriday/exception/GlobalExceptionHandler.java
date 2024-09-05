@@ -27,8 +27,8 @@ public class GlobalExceptionHandler {
         return response;
     }
 
-    @ExceptionHandler(AlreadyDeletedUserException.class)
-    public ApiResponse<?> alreadyDeletedUserException(AlreadyDeletedUserException e) {
+    @ExceptionHandler(AlreadyDeletedException.class)
+    public ApiResponse<?> alreadyDeletedUserException(AlreadyDeletedException e) {
         ApiResponse<?> response = ApiResponse.createError(e.getMessage(), HttpStatus.CONFLICT.value());
         return response;
     }

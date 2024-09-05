@@ -29,7 +29,7 @@ public class Post extends Timestamped {
 
     private String writer;
 
-    private boolean deleted=false;
+    private Boolean deleted=false;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<>();
