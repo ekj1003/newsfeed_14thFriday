@@ -31,7 +31,7 @@ public class CommentLikeService {
         Comment comment = commentRepository.findByCommentId(commentId)
                 .orElseThrow(()-> new NullPointerException("comment not found"));
 
-        User user = userRepository.findByEmail(commentLikeRequestDto.getUserEmail())
+        User user = userRepository.findByEmailAndDeleted(commentLikeRequestDto.getUserEmail(),false)
                 .orElseThrow(()-> new NullPointerException("user not found"));
 
         Post post = postRepository.findById(postId)
@@ -67,7 +67,7 @@ public class CommentLikeService {
         Comment comment = commentRepository.findByCommentId(commentId)
                 .orElseThrow(()-> new NullPointerException("comment not found"));
 
-        User user = userRepository.findByEmail(commentLikeRequestDto.getUserEmail())
+        User user = userRepository.findByEmailAndDeleted(commentLikeRequestDto.getUserEmail(),false)
                 .orElseThrow(()-> new NullPointerException("user not found"));
 
         Post post = postRepository.findById(postId)

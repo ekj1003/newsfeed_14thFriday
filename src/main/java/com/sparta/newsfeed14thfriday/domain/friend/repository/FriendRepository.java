@@ -9,6 +9,7 @@ import java.util.Optional;
 
 
 public interface FriendRepository extends JpaRepository<Friend, Long> {
-    List<Friend> findByUser(User user);
+    Optional<Friend> findById(Long friendId);
+    List<Friend> findByUserAndStatus(User user,String accept);
     Optional<Friend> findByUserAndFriend(User user, User friend); //중복체크
 }
