@@ -43,7 +43,6 @@ public class PostService {
         Post newPost = Post.createNewPost(
             data.getTitle(),
             data.getContents(),
-            user.getUsername(),
             user
         );
 
@@ -68,7 +67,8 @@ public class PostService {
             post.getPostLikeCount(),
             post.getCreateAt(),
             post.getModifiedAt(),
-                post.getWriter()
+                post.getUser().getEmail()
+
         );
     }
 
@@ -116,9 +116,8 @@ public class PostService {
 
     public Page<PostSimpleResponseDto> getPosts(int page, int size, String userEmail) {
         User user = findUserByEmail(userEmail);
-        String name = user.getUsername();
         Pageable pageable = PageRequest.of(page-1,size);
-        Page<Post> posts = postRepository.findByWriterOrderByModifiedAtDesc(name,pageable);
+        Page<Post> posts = postRepository.findByUser_EmailOrderByModifiedAtDesc(user.getEmail(),pageable);
 
         return posts.map(post -> new PostSimpleResponseDto(post));
     }
