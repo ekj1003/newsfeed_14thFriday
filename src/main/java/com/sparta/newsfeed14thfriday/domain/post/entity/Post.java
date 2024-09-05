@@ -23,6 +23,8 @@ public class Post extends Timestamped {
     @Column(length = 500, nullable = false)
     private String contents;
 
+    private String writer;
+
     //   @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     //  private List<Comment> comments = new ArrayList<>();
 
@@ -43,6 +45,7 @@ public class Post extends Timestamped {
         newPost.title = title;
         newPost.contents = contents;
         newPost.user = user;
+        newPost.writer = user.getUsername();
 
         return newPost;
     }

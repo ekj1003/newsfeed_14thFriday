@@ -28,6 +28,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
 
+    @Transactional
     public PostSaveResponseDto createPost(PostSaveRequestDto data) {
         // 조회: 유저 존재 여부
         User user = userRepository.findByEmail(data.getEmail())
