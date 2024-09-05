@@ -29,11 +29,14 @@ public class PostService {
     private final UserRepository userRepository;
 
     @Transactional
-    public PostSaveResponseDto createPost(PostSaveRequestDto data) {
+    public PostSaveResponseDto createPost(String Token, PostSaveRequestDto data) {
         // 조회: 유저 존재 여부
         User user = userRepository.findByEmail(data.getEmail())
             .orElseThrow(() -> new NullPointerException("User not found"));
 
+        if(!user.getEmail().equals(Token)){
+            throw new AuthException("권한이 없습니다");
+        }
 
         // 생성: Post Entity
         // 포스트를 생성할때 유저네임을 생성할때 넣는것으로 변경 -> 게시물을 찾을때 유저네임으로 찾으려고
