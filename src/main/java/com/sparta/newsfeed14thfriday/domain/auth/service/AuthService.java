@@ -76,18 +76,4 @@ public class AuthService {
 
         return new LoginResponseDto(bearerToken);
     }
-    @Transactional
-    public void accountRestoration(AccountRestorationRequestDto requestDto) {
-        User user = userRepository.findByEmailAndDeleted(requestDto.getUserEmail(),false)
-                .orElseThrow(() -> new AuthException("가입되지 않은 이메일입니다."));
-
-        if (!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
-            throw new AuthException("잘못된 비밀번호입니다.");
-        }
-        //유저가 삭제되었는지 확인
-        if(!user.getDeleted()) {
-            throw new AuthException("탈퇴하지 않은 회원입니다");
-        }
-        user.restoreUser();
-    }
 }
