@@ -97,7 +97,7 @@ public class UserService {
 
     public boolean isDeletedUser(String email) {
         User user = userRepository.findByEmailAndDeleted(email,false).orElseThrow(EmailNotFoundException::new);
-        if (user.isDeleted()) {
+        if (user.getDeleted()) {
             return true;
         }
         return false;
@@ -105,7 +105,7 @@ public class UserService {
 
     public User findUserByEmail(String email) {
         User user = userRepository.findByEmailAndDeleted(email,false).orElseThrow(EmailNotFoundException::new);
-        if (user.isDeleted()) {
+        if (user.getDeleted()) {
             throw new DeletedUserIdException();
         }
         return user;
@@ -169,7 +169,11 @@ public class UserService {
         List<Friend> friends = friendRepository.findByUserAndStatus(user,"ACCEPTED");
 
 
-        List<String> friendsEmailsList = friends.stream().map(friend -> friend.getFriend().getEmail()).toList();
+        List<String> friendsEmailsList = friends.stream()
+                .map(friend -> friend.getFriend())
+                .filter(frineduser->!frineduser.getDeleted())
+                .map(User::getEmail)
+                .toList();
         Page<Post> friendsPost = postRepository.findAllByUser_EmailInAndDeletedFalseOrderByUpdatedAtDesc(friendsEmailsList,pageable);
 
         return friendsPost.map(post -> new UserNewsfeedResponseDto(post));
