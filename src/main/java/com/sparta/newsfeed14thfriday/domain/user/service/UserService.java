@@ -149,6 +149,7 @@ public class UserService {
         Pageable pageable = PageRequest.of(page-1,size);
         Page<Post> posts = postRepository.findByUser_EmailOrderByModifiedAtDesc(user.getEmail(),pageable);
 
+
         return posts.map(post -> new UserGetPostsResponseDto(post));
     }
 

@@ -1,6 +1,6 @@
 package com.sparta.newsfeed14thfriday.domain.post.service;
 
-import com.sparta.newsfeed14thfriday.domain.post.dto.request.PostPeriodRequestDto;
+import com.sparta.newsfeed14thfriday.domain.post.dto.request.PostDeleteDto;
 import com.sparta.newsfeed14thfriday.domain.post.dto.request.PostSaveRequestDto;
 import com.sparta.newsfeed14thfriday.domain.post.dto.request.PostUpdateRequestDto;
 import com.sparta.newsfeed14thfriday.domain.post.dto.response.PostDetailResponseDto;
@@ -18,13 +18,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
-
-import java.time.LocalDate;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -48,6 +44,7 @@ public class PostService {
 
         // 저장: Post
         Post savedPost = postRepository.save(newPost);
+
         // 응답 반환
         return new PostSaveResponseDto(
             "created",
@@ -68,6 +65,7 @@ public class PostService {
             post.getCreateAt(),
             post.getModifiedAt(),
                 post.getUser().getEmail()
+
 
         );
     }
@@ -98,18 +96,18 @@ public class PostService {
     }
 
     @Transactional
-    public void deletePost(Long postId) {
+    public void deletePost(Long postId, PostDeleteDto postDeleteDto) {
         // 조회: postId, userId
         Post post = postRepository.findByPostId(postId).orElseThrow(() -> new NullPointerException("Post not found."));
-//        User user = userRepository.findById(data.getUserId()).orElseThrow(() -> new NullPointerException("User not found."));
-//
-//        //작성자 일치 여부
-//        if(post.getUser() == null || !ObjectUtils.nullSafeEquals(user.getId(), post.getUser.getId())){
-//            throw new IllegalArgumentException("작성자가 일치하지않습니다.");
-//        } else{
-//            // delete
-//            postRepository.deleteByPostId(postId)
-//        }
+        User user = userRepository.findByEmail(postDeleteDto.getEmail()).orElseThrow(() -> new NullPointerException("User not found."));
+
+        //작성자 일치 여부
+        if(post.getUser() == null || !ObjectUtils.nullSafeEquals(user.getEmail(), post.getUser().getEmail())){
+            throw new IllegalArgumentException("작성자가 일치하지않습니다.");
+        } else{
+            // delete
+            postRepository.deleteByPostId(postId);
+        }
         postRepository.deleteByPostId(postId);
     }
 
@@ -119,23 +117,8 @@ public class PostService {
         Pageable pageable = PageRequest.of(page-1,size);
         Page<Post> posts = postRepository.findByUser_EmailOrderByModifiedAtDesc(user.getEmail(),pageable);
 
+
         return posts.map(post -> new PostSimpleResponseDto(post));
-    }
-
-    // 기간별 게시물 검색
-    public Page<PostSimpleResponseDto> getPostsPeriod(int page, int size, PostPeriodRequestDto periodRequestDto) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createAt").descending());
-
-        LocalDate startDate = periodRequestDto.getStartDate();
-        LocalDate endDate = periodRequestDto.getEndDate();
-
-        Page<Post> postsPage = postRepository.findByCreateAtBetween(
-                startDate.atStartOfDay(),
-                endDate.atStartOfDay().plusDays(1).minusNanos(1),
-                pageable
-        );
-
-        return postsPage.map(post -> new PostSimpleResponseDto(post));
     }
 
     public User findUserByEmail(String email) {

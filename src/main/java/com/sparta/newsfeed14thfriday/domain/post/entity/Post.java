@@ -2,11 +2,10 @@ package com.sparta.newsfeed14thfriday.domain.post.entity;
 
 import com.sparta.newsfeed14thfriday.domain.post_like.entity.PostLike;
 import com.sparta.newsfeed14thfriday.domain.user.entity.User;
+import com.sparta.newsfeed14thfriday.entity_common.Timestamped;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
 import java.util.Set;
 
 @Getter

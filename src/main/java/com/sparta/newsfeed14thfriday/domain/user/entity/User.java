@@ -2,6 +2,7 @@ package com.sparta.newsfeed14thfriday.domain.user.entity;
 
 import com.sparta.newsfeed14thfriday.domain.friend.entity.Friend;
 import com.sparta.newsfeed14thfriday.domain.post.entity.Post;
+import com.sparta.newsfeed14thfriday.domain.post_like.entity.PostLike;
 import com.sparta.newsfeed14thfriday.entity_common.Timestamped;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -22,7 +23,7 @@ public class User extends Timestamped {
     @Column(length = 50)
     private String statusMessage;
     //이름,이메일은 중복이 불가하도록 수정
-    @Column(nullable = false,length = 50)
+    @Column(nullable = false,length = 50,unique = true)
     private String username;
 
     @Column(nullable = false,length = 200)
@@ -33,19 +34,18 @@ public class User extends Timestamped {
 
     private Long friendsCount = 0L; // 친구 수를 0으로 초기화
 
-    @OneToMany(mappedBy = "user") // 수정된 부분
-    private List<Post> posts = new ArrayList<>();
+    @OneToMany(mappedBy="user")
+    private List<Post> Posts = new ArrayList<>();
 
+    @OneToMany(mappedBy="user")
+    private List<PostLike> postLike = new ArrayList<>();
     @OneToMany(mappedBy = "user")
-    private List<Friend> friends = new ArrayList<>(); // 수정된 부분
-
-
+    private List<Friend> friend = new ArrayList<>();
 
     public User(String username, String password, String email) {
         this.email = email;
         this.username = username;
         this.password = password;
-        this.friendsCount = 0L;
     }
     public void updateUserName(String username) {
         this.username = username;
