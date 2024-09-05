@@ -2,9 +2,9 @@ package com.sparta.newsfeed14thfriday.domain.friend.controller;
 
 import com.sparta.newsfeed14thfriday.domain.friend.dto.FriendList.FriendListRequestDto;
 import com.sparta.newsfeed14thfriday.domain.friend.dto.FriendList.FriendListResponseDto;
+import com.sparta.newsfeed14thfriday.domain.friend.dto.FriendList.UserEmailRequestDto;
 import com.sparta.newsfeed14thfriday.domain.friend.entity.Friend;
 import com.sparta.newsfeed14thfriday.domain.friend.service.FriendService;
-import com.sparta.newsfeed14thfriday.global.config.TokenUserEmail;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -16,13 +16,12 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@RequestMapping("/friends")
 public class FriendController {
     private final FriendService friendService;
 
-
-
     // 친구 저장
-    @PostMapping("/friends")
+    @PostMapping
     public ResponseEntity<FriendListResponseDto> createFriend(@RequestBody FriendListRequestDto requestDto) {
         try {
             Friend savedFriend = friendService.saveFriend(requestDto);
@@ -40,42 +39,36 @@ public class FriendController {
     }
 
     // 친구 리스트 조회
-    @GetMapping("/friends")
-    public ResponseEntity<List<FriendListResponseDto>> getFriendList(@RequestParam String userEmail) {
-        List<FriendListResponseDto> friends = friendService.getFriendList(userEmail);
+    @GetMapping("/list")
+    public ResponseEntity<List<FriendListResponseDto>> getFriendList(@RequestBody UserEmailRequestDto requestDto) {
+        List<FriendListResponseDto> friends = friendService.getFriendList(requestDto.getUserEmail());
         return new ResponseEntity<>(friends, HttpStatus.OK);
     }
 
     // 특정 친구 조회
-    @GetMapping("/friends/{id}")
-    public ResponseEntity<FriendListResponseDto> getFriendById(@PathVariable("id") Long friendId) {
-        FriendListResponseDto friend = friendService.getFriendById(friendId);
+    @GetMapping("/details")
+    public ResponseEntity<FriendListResponseDto> getFriendByEmail(@RequestBody FriendListRequestDto requestDto) {
+        FriendListResponseDto friend = friendService.getFriendByEmail(requestDto.getUserEmail(), requestDto.getFriendEmail());
         return new ResponseEntity<>(friend, HttpStatus.OK);
     }
 
     // 친구 요청 수락
-    @PostMapping("/friends/{id}/accept")
-    public ResponseEntity<String> acceptFriendRequest(@PathVariable("id") Long friendId, @TokenUserEmail String receiverEmail) {
-        friendService.acceptFriendRequest(friendId, receiverEmail);
+    @PostMapping("/accept")
+    public ResponseEntity<String> acceptFriendRequest(@RequestBody FriendListRequestDto requestDto) {
+        friendService.acceptFriendRequest(requestDto.getUserEmail(), requestDto.getFriendEmail());
         return new ResponseEntity<>("친구 추가 수락", HttpStatus.OK);
     }
 
     // 친구 요청 거절
-    @PostMapping("/friends/{id}/reject")
-    public ResponseEntity<String> rejectFriendRequest(@PathVariable("id") Long friendId, @TokenUserEmail String receiverEmail) {
-        friendService.rejectFriendRequest(friendId, receiverEmail);
+    @PostMapping("/reject")
+    public ResponseEntity<String> rejectFriendRequest(@RequestBody FriendListRequestDto requestDto) {
+        friendService.rejectFriendRequest(requestDto.getUserEmail(), requestDto.getFriendEmail());
         return new ResponseEntity<>("친구 추가 거절", HttpStatus.OK);
     }
 
-    // 친구 삭제
-    @DeleteMapping("/friends/{id}")
-    public ResponseEntity<String> deleteFriend(@PathVariable("id") Long friendId) {
-        friendService.deleteFriend(friendId);
+    @DeleteMapping
+    public ResponseEntity<String> deleteFriend(@RequestBody FriendListRequestDto requestDto) {
+        friendService.deleteFriend(requestDto.getUserEmail(), requestDto.getFriendEmail());
         return new ResponseEntity<>("친구 삭제", HttpStatus.NO_CONTENT);
     }
-
-
-
-
-
 }
