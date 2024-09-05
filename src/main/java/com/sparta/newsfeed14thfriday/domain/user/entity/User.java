@@ -37,10 +37,6 @@ public class User extends Timestamped {
 //    @OneToMany(mappedBy="user")
 //    private List<Post> Posts = new ArrayList<>();
 
-    @OneToMany(mappedBy="user")
-    private List<PostLike> postLike = new ArrayList<>();
-    @OneToMany(mappedBy = "user")
-    private List<Friend> friend = new ArrayList<>();
 
     public User(String username, String password, String email) {
         this.email = email;

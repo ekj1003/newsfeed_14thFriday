@@ -40,7 +40,7 @@ public class FriendService {
         User user = userRepository.findById(userEmail)
                 .orElseThrow(() -> new IllegalArgumentException("친구가 없습니다 " + userEmail));
 
-        List<Friend> friendList = friendRepository.findByUser(user);
+        List<Friend> friendList = friendRepository.findByUserAndStatus(user,"ACCEPTED");
         List<FriendListResponseDto> dtoList = new ArrayList<>();
 
         for (Friend friend : friendList) {

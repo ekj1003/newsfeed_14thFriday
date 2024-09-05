@@ -15,8 +15,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
@@ -39,10 +37,10 @@ public class UserController {
     //필수 :- **프로필 조회 기능**
     //    - 다른 사용자의 프로필 조회 시, 민감한 정보는 표시되지 않습니다.
     @GetMapping("/user-management/{userEmail}/profiles")
-    public ApiResponse<UserProfileResponseDto> getProfile(
+    public ApiResponse<UserProfileDetailResponseDto> getProfile(
             @PathVariable String userEmail,
             @TokenUserEmail String tokenEmail) {
-        UserProfileResponseDto  responseDto = userService.getProfile(tokenEmail,userEmail);
+        UserProfileDetailResponseDto responseDto = userService.getProfile(tokenEmail,userEmail);
         log.info("유저 프로필 조회");
         return ApiResponse.createSuccess("유저 프로필 조회 완료", HttpStatus.CREATED.value(), responseDto);
     }

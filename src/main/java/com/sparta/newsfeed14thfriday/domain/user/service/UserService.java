@@ -13,7 +13,6 @@ import com.sparta.newsfeed14thfriday.domain.user.dto.request.UserStatusMessageRe
 import com.sparta.newsfeed14thfriday.domain.user.dto.response.*;
 import com.sparta.newsfeed14thfriday.domain.user.entity.User;
 import com.sparta.newsfeed14thfriday.domain.user.repository.UserRepository;
-import com.sparta.newsfeed14thfriday.exception.AlreadyDeletedException;
 import com.sparta.newsfeed14thfriday.exception.DeletedUserIdException;
 import com.sparta.newsfeed14thfriday.exception.EmailNotFoundException;
 
@@ -42,14 +41,15 @@ public class UserService {
     private final FriendRepository friendRepository;
 
     //유저 단건 조회
-    public UserProfileResponseDto getProfile(String tokenEmail,String userEmail) {
+    public UserProfileDetailResponseDto getProfile(String tokenEmail, String userEmail) {
         User user = findUserByEmail(userEmail);
         if (!userEmail.equals(tokenEmail)) {
             log.info("유저데이터심플");
-            return new UserProfileResponseDto(user,"simple");
+            return new UserProfileDetailResponseDto(user);
+        } else {
+            log.info("유저데이터디테일");
+            return new UserProfileDetailResponseDto(user);
         }
-        log.info("유저데이터디테일");
-        return new UserProfileResponseDto(user,"detail");
     }
 
     @Transactional
@@ -109,9 +109,6 @@ public class UserService {
         if (!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
             throw new AuthException("잘못된 비밀번호입니다.");
         }
-        if (user.isDeleted()) {
-            throw new AlreadyDeletedException("탈퇴한 유저입니다.");
-        }
         //user의 deleted값을 true로 변경한다.
         user.deleteUser();
 
@@ -160,7 +157,7 @@ public class UserService {
             throw new AuthException("권한이 없습니다");
         }
         Pageable pageable = PageRequest.of(page-1,size);
-        List<Friend> friends = friendRepository.findByUser(user);
+        List<Friend> friends = friendRepository.findByUserAndStatus(user,"ACCEPTED");
 
 
         List<String> friendsEmailsList = friends.stream().map(friend -> friend.getFriend().getEmail()).toList();
