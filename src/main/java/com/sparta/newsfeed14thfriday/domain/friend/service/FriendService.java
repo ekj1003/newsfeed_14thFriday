@@ -20,16 +20,15 @@ public class FriendService {
 
     // 친구 저장
     public Friend saveFriend(FriendListRequestDto requestDto) {
-        User user = userRepository.findById(requestDto.getUserEmail())
+        User user = userRepository.findByEmail(requestDto.getUserEmail())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일: " + requestDto.getUserEmail()));
-        User friend = userRepository.findById(requestDto.getFriendEmail())
+        User friend = userRepository.findByEmail(requestDto.getFriendEmail())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 친구이메일: " + requestDto.getFriendEmail()));
 
         // 중복된 친구 관계가 존재하는지 확인
         friendRepository.findByUserAndFriend(user, friend).ifPresent(existingFriend -> {
-            throw new IllegalArgumentException("이미 친구 관계 " + requestDto.getUserEmail()  + requestDto.getFriendEmail());
+            throw new IllegalArgumentException("이미 친구 관계 " + requestDto.getUserEmail() + "와 " + requestDto.getFriendEmail());
         });
-
 
         Friend newFriend1 = new Friend(user, friend);
         Friend newFriend2 = new Friend(friend, user);
@@ -40,8 +39,8 @@ public class FriendService {
 
     // 친구 리스트 조회
     public List<FriendListResponseDto> getFriendList(String userEmail) {
-        User user = userRepository.findById(userEmail)
-                .orElseThrow(() -> new IllegalArgumentException("친구가 없습니다 " + userEmail));
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일: " + userEmail));
 
         List<Friend> friendList = friendRepository.findByUser(user);
         List<FriendListResponseDto> dtoList = new ArrayList<>();
@@ -56,45 +55,70 @@ public class FriendService {
     }
 
     // 특정 친구 조회
-    public FriendListResponseDto getFriendById(Long friendId) {
-        Friend friend = friendRepository.findById(friendId)
-                .orElseThrow(() -> new IllegalArgumentException("검색하신 친구가 없습니다 " + friendId));
+    public FriendListResponseDto getFriendByEmail(String userEmail, String friendEmail) {
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 이메일: " + userEmail));
+        User friend = userRepository.findByEmail(friendEmail)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 친구 이메일: " + friendEmail));
+
+        Friend friendRequest = friendRepository.findByUserAndFriend(user, friend)
+                .orElseThrow(() -> new IllegalArgumentException("친구 요청이 존재하지 않습니다: " + userEmail + "와 " + friendEmail));
+
         return new FriendListResponseDto(
-                friend.getId(),
-                friend.getFriend().getEmail() // User 객체에서 이메일 추출
+                friendRequest.getId(),
+                friendRequest.getFriend().getEmail()
         );
     }
 
     // 친구 요청 수락
-    public void acceptFriendRequest(Long friendId, String receiverEmail) {
-        Friend friend = friendRepository.findById(friendId)
-                .orElseThrow(() -> new IllegalArgumentException("친구요청하신 친구가 없습니다: " + friendId));
-        // 요청한 사용자가 요청을 받은 사람인지 확인
-        if (!friend.getFriend().getEmail().equals(receiverEmail)) {
-            throw new IllegalArgumentException("이메일이 틀립니다");
+    public void acceptFriendRequest(String userEmail, String friendEmail) {
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 이메일: " + userEmail));
+        User friend = userRepository.findByEmail(friendEmail)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 친구 이메일: " + friendEmail));
+
+        Friend friendRequest = friendRepository.findByUserAndFriend(user, friend)
+                .orElseThrow(() -> new IllegalArgumentException("친구 요청이 존재하지 않습니다: " + userEmail + "와 " + friendEmail));
+
+        if (friendRequest.isAccepted()) {
+            throw new IllegalArgumentException("이미 수락된 친구 요청입니다.");
         }
-        //이미 친구상태인경우 예외처리 필요
-        friend.accept();
-        friendRepository.save(friend);
+
+        friendRequest.accept();
+        friendRepository.save(friendRequest);
+
+        // 2. friend -> user 친구 요청 수락
+        Friend reciprocalRequest = friendRepository.findByUserAndFriend(friend, user)
+                .orElseThrow(() -> new IllegalArgumentException("상대방의 친구 요청이 존재하지 않습니다: " + friendEmail + "와 " + userEmail));
+
+        reciprocalRequest.accept(); // friend -> user 수락
+        friendRepository.save(reciprocalRequest);
+
     }
 
     // 친구 요청 거절 (데이터베이스에서 삭제)
-    public void rejectFriendRequest(Long friendId, String receiverEmail) {
-        Friend friend = friendRepository.findById(friendId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 친구입니다 " + friendId));
+    public void rejectFriendRequest(String userEmail, String friendEmail) {
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 이메일: " + userEmail));
+        User friend = userRepository.findByEmail(friendEmail)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 친구 이메일: " + friendEmail));
 
-        // 요청한 사용자가 요청을 받은 사람인지 확인
-        if (!friend.getFriend().getEmail().equals(receiverEmail)) {
-            throw new IllegalArgumentException("이메일이 틀립니다");
-        }
+        Friend friendRequest = friendRepository.findByUserAndFriend(user, friend)
+                .orElseThrow(() -> new IllegalArgumentException("친구 요청이 존재하지 않습니다: " + userEmail + "와 " + friendEmail));
 
-        friendRepository.delete(friend);  // 거절 시 데이터베이스에서 삭제
+        friendRepository.delete(friendRequest);  // 거절 시 데이터베이스에서 삭제
     }
 
     // 친구 삭제
-    public void deleteFriend(Long friendId) {
-        Friend friend = friendRepository.findById(friendId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 친구입니다 " + friendId));
-        friendRepository.delete(friend);
+    public void deleteFriend(String userEmail, String friendEmail) {
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 이메일: " + userEmail));
+        User friend = userRepository.findByEmail(friendEmail)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 친구 이메일: " + friendEmail));
+
+        Friend friendRequest = friendRepository.findByUserAndFriend(user, friend)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 친구 관계입니다: " + userEmail + "와 " + friendEmail));
+
+        friendRepository.delete(friendRequest);
     }
 }

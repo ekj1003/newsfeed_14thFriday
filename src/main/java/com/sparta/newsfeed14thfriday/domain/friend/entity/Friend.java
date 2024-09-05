@@ -31,15 +31,18 @@ public class Friend {
     public Friend(User user, User friend) {
         this.user = user;
         this.friend = friend;
+        this.status = "PENDING";
+
     }
 
     //수락
     public void accept() {
         this.status = "ACCEPTED";
     }
-    //거절
-    public void reject() {
-        this.status = "REJECTED";
+
+    // 친구 요청이 수락되었는지 여부를 확인하는 메서드
+    public boolean isAccepted() {
+        return "ACCEPTED".equals(this.status);
     }
 
 }
