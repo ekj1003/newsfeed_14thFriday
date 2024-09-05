@@ -34,7 +34,7 @@ public class CommentService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NullPointerException("Post not found"));
 
-        User email = userRepository.findByEmail(commentSaveRequestDto.getEmail())
+        User email = userRepository.findByEmail(commentSaveRequestDto.getUserEmail())
                 .orElseThrow(() -> new NullPointerException("User not found"));
 
         Comment comment = new Comment(

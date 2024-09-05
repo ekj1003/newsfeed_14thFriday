@@ -8,7 +8,7 @@ public class CommentSaveRequestDto {
     private long commentId;
     private String contents;
 
-    private String email;
+    private String userEmail;
     private long postId;
 
 }
