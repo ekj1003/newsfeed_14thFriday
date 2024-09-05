@@ -6,6 +6,6 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class PostDeleteDto {
+public class PostDeleteRequestDto {
     private String email;
 }

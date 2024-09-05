@@ -1,6 +1,6 @@
 package com.sparta.newsfeed14thfriday.domain.post.service;
 
-import com.sparta.newsfeed14thfriday.domain.post.dto.request.PostDeleteDto;
+import com.sparta.newsfeed14thfriday.domain.post.dto.request.PostDeleteRequestDto;
 import com.sparta.newsfeed14thfriday.domain.post.dto.request.PostSaveRequestDto;
 import com.sparta.newsfeed14thfriday.domain.post.dto.request.PostUpdateRequestDto;
 import com.sparta.newsfeed14thfriday.domain.post.dto.response.PostDetailResponseDto;
@@ -9,7 +9,6 @@ import com.sparta.newsfeed14thfriday.domain.post.dto.response.PostSimpleResponse
 import com.sparta.newsfeed14thfriday.domain.post.dto.response.PostUpdateResponseDto;
 import com.sparta.newsfeed14thfriday.domain.post.entity.Post;
 import com.sparta.newsfeed14thfriday.domain.post.repository.PostRepository;
-import com.sparta.newsfeed14thfriday.domain.user.dto.response.UserGetPostsResponseDto;
 import com.sparta.newsfeed14thfriday.domain.user.entity.User;
 import com.sparta.newsfeed14thfriday.domain.user.repository.UserRepository;
 import com.sparta.newsfeed14thfriday.exception.DeletedUserIdException;
@@ -97,10 +96,10 @@ public class PostService {
     }
 
     @Transactional
-    public void deletePost(Long postId, PostDeleteDto postDeleteDto) {
+    public void deletePost(Long postId, PostDeleteRequestDto postDeleteRequestDto) {
         // 조회: postId, userId
         Post post = postRepository.findByPostId(postId).orElseThrow(() -> new NullPointerException("Post not found."));
-        User user = userRepository.findByEmail(postDeleteDto.getEmail()).orElseThrow(() -> new NullPointerException("User not found."));
+        User user = userRepository.findByEmail(postDeleteRequestDto.getEmail()).orElseThrow(() -> new NullPointerException("User not found."));
 
         //작성자 일치 여부
         if(!ObjectUtils.nullSafeEquals(user.getEmail(), post.getUser().getEmail())){
