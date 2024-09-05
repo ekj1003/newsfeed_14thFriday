@@ -6,11 +6,9 @@ import com.sparta.newsfeed14thfriday.domain.friend.entity.Friend;
 import com.sparta.newsfeed14thfriday.domain.friend.repository.FriendRepository;
 import com.sparta.newsfeed14thfriday.domain.post.entity.Post;
 import com.sparta.newsfeed14thfriday.domain.post.repository.PostRepository;
+import com.sparta.newsfeed14thfriday.domain.user.dto.RequestToMeDto;
 import com.sparta.newsfeed14thfriday.domain.user.dto.UserListDto;
-import com.sparta.newsfeed14thfriday.domain.user.dto.request.UserChangePwdRequestDto;
-import com.sparta.newsfeed14thfriday.domain.user.dto.request.UserDeleteRequestDto;
-import com.sparta.newsfeed14thfriday.domain.user.dto.request.UserProfileUpdateRequestDto;
-import com.sparta.newsfeed14thfriday.domain.user.dto.request.UserStatusMessageRequestDto;
+import com.sparta.newsfeed14thfriday.domain.user.dto.request.*;
 import com.sparta.newsfeed14thfriday.domain.user.dto.response.*;
 import com.sparta.newsfeed14thfriday.domain.user.entity.User;
 import com.sparta.newsfeed14thfriday.domain.user.repository.UserRepository;
@@ -177,5 +175,32 @@ public class UserService {
         Page<Post> friendsPost = postRepository.findAllByUser_EmailInAndDeletedFalseOrderByUpdatedAtDesc(friendsEmailsList,pageable);
 
         return friendsPost.map(post -> new UserNewsfeedResponseDto(post));
+    }
+
+    public UserFriendRequestResponseDto checkFriendRequest(String token, UserFriendRequestRequestDto requestDto) {
+        if(!requestDto.getEmail().equals(token)){
+            throw new AuthException("권한이 없습니다");
+        }
+        User user = findUserByEmail(requestDto.getEmail());
+        //내가 친구요청을 보낸친구들 즉 내기준에서는 내가 친구요청한 사람들 Friend 객체에서 User쪽에 있는사람이 친구요청을 보낸 사람이다.
+        List<Friend> inviteToMeFriends = friendRepository.findByUserAndStatusAndInvite(user,"PENDING","RECEIVE");
+        //User에서 나를찾는다 그리고 invite는 RECEIVE 로하면 내가 친구요청을 보낸 Friend 객체가나온다.
+        List<User> receiveUserList = inviteToMeFriends.stream().map(friend -> friend.getFriend()).toList();
+        //그객체의 친구를뽑아 userList를 만든다 이 유저리스트는 내가친구요청을 보낸 사람들이다.
+        List<RequestToMeDto> receiveList = receiveUserList.stream().map(receiveuser->new RequestToMeDto(receiveuser,"내가친구요청을보낸")).toList();
+        //그후 user리스트를 기반으로 이사람들의 정보를 List<Dto>에 매핑하는 스트림작성
+
+        //친구에서 나를찾는다 그러면 누군가 나에게보낸 요청이 나온다. Friend 객체에서 Friend 쪽에 있는 사람이 친구요청을 받은사람
+        List<Friend> iInviteToFriends = friendRepository.findByFriendAndStatusAndInvite(user,"PENDING","RECEIVE");
+        //Friend에서 나를찾는다 즉 나에게 친구요청을 보낸 객체들을 찾는다.
+        List<User> sendUserList = iInviteToFriends.stream().map(friend -> friend.getUser()).toList();
+        //그 객체에서 User들을 뽑아온다 = 나에게 친구요청을 보낸사람들
+        List<RequestToMeDto> sendList = sendUserList.stream().map(sendduser->new RequestToMeDto(sendduser,"나에게친구요청을보낸")).toList();
+        //그후 user리스트를 기반으로 이사람들의 정보를 List<Dto>에 매핑하는 스트림 작성
+
+        UserFriendRequestResponseDto receiveResponseList = new UserFriendRequestResponseDto(receiveList,sendList);
+        //
+
+        return receiveResponseList;
     }
 }

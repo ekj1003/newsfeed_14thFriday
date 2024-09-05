@@ -1,10 +1,7 @@
 package com.sparta.newsfeed14thfriday.domain.user.controller;
 
-import com.sparta.newsfeed14thfriday.domain.user.dto.request.UserChangePwdRequestDto;
-import com.sparta.newsfeed14thfriday.domain.user.dto.request.UserDeleteRequestDto;
+import com.sparta.newsfeed14thfriday.domain.user.dto.request.*;
 import com.sparta.newsfeed14thfriday.domain.user.dto.response.*;
-import com.sparta.newsfeed14thfriday.domain.user.dto.request.UserProfileUpdateRequestDto;
-import com.sparta.newsfeed14thfriday.domain.user.dto.request.UserStatusMessageRequestDto;
 import com.sparta.newsfeed14thfriday.domain.user.service.UserService;
 import com.sparta.newsfeed14thfriday.entity_common.ApiPageResponse;
 import com.sparta.newsfeed14thfriday.entity_common.ApiResponse;
@@ -96,6 +93,15 @@ public class UserController {
         userService.changePwd(userEmail,requestDto);
         log.info("유저 비밀번호 변경");
         return ApiResponse.createSuccess("유저 비밀 번호 변경",HttpStatus.CREATED.value(), null);
+    }
+
+    @GetMapping("/user-management/friend-request")
+    public ApiResponse<UserFriendRequestResponseDto> checkFriendRequest(
+            @TokenUserEmail String token,
+            @RequestBody UserFriendRequestRequestDto requestDto) {
+        UserFriendRequestResponseDto responseDto = userService.checkFriendRequest(token,requestDto);
+        log.info("유저 친구 요청 조회");
+        return ApiResponse.createSuccess("유저 친구 요청 조회",HttpStatus.CREATED.value(), responseDto);
     }
 
 }
