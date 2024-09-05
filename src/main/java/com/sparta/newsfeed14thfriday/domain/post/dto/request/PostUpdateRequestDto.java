@@ -1,11 +1,10 @@
 package com.sparta.newsfeed14thfriday.domain.post.dto.request;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
-public class PostSaveRequestDto {
+public class PostUpdateRequestDto {
+    private Long postId;
     private String email;
     private String title;
     private String contents;

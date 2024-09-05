@@ -15,11 +15,19 @@ public class UserProfileResponseDto {
     private final Long friendsCount;
     private final List<Friend> friendsList;
 
-    public UserProfileResponseDto(User user) {
-        this.email = user.getEmail();
-        this.statusMessage = user.getStatusMessage();
-        this.username = user.getUsername();
-        this.friendsCount = user.getFriendsCount();
-        this.friendsList = user.getFriends();
+    public UserProfileResponseDto(User user,String Type) {
+        if (Type.equals("Detail")) {
+            this.email = user.getEmail();
+            this.statusMessage = user.getStatusMessage();
+            this.username = user.getUsername();
+            this.friendsCount = user.getFriendsCount();
+            this.friendsList = user.getFriends();
+        } else {
+            this.email = user.getEmail();
+            this.statusMessage = user.getStatusMessage();
+            this.username = user.getUsername();
+            this.friendsCount = null;
+            this.friendsList = null;
+        }
     }
 }

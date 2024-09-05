@@ -3,10 +3,11 @@ package com.sparta.newsfeed14thfriday.domain.post.dto.request;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Getter
 @NoArgsConstructor
-public class PostSaveRequestDto {
-    private String email;
-    private String title;
-    private String contents;
+public class PostPeriodRequestDto {
+    private LocalDate startDate;
+    private LocalDate endDate;
 }
