@@ -115,7 +115,7 @@ public class PostService {
         User user = findUserByEmail(userEmail);
         String name = user.getUsername();
         Pageable pageable = PageRequest.of(page-1,size);
-        Page<Post> posts = postRepository.findByWriterOrderByModifiedAtDesc(name,pageable);
+        Page<Post> posts = postRepository.findByWriterOrderByUpdatedAtDesc(name,pageable);
 
         return posts.map(post -> new PostSimpleResponseDto(post));
     }

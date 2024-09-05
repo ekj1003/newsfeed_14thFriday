@@ -21,7 +21,7 @@ public class UserProfileResponseDto {
             this.statusMessage = user.getStatusMessage();
             this.username = user.getUsername();
             this.friendsCount = user.getFriendsCount();
-            this.friendsList = user.getFriends();
+            this.friendsList = user.getFriend();
         } else {
             this.email = user.getEmail();
             this.statusMessage = user.getStatusMessage();
