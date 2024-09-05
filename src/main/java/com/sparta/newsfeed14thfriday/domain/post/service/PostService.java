@@ -1,6 +1,5 @@
 package com.sparta.newsfeed14thfriday.domain.post.service;
 
-import com.sparta.newsfeed14thfriday.domain.post.dto.request.PostDeleteDto;
 import com.sparta.newsfeed14thfriday.domain.post.dto.request.PostSaveRequestDto;
 import com.sparta.newsfeed14thfriday.domain.post.dto.request.PostUpdateRequestDto;
 import com.sparta.newsfeed14thfriday.domain.post.dto.response.PostDetailResponseDto;
@@ -65,8 +64,8 @@ public class PostService {
             post.getContents(),
             post.getCommentCount(),
             post.getPostLikeCount(),
-            post.getCreatedAt(),
-            post.getUpdatedAt(),
+            post.getCreateAt(),
+            post.getModifiedAt(),
                 post.getWriter()
         );
     }
@@ -97,20 +96,18 @@ public class PostService {
     }
 
     @Transactional
-    public void deletePost(Long postId, PostDeleteDto postDeleteDto) {
+    public void deletePost(Long postId) {
         // 조회: postId, userId
         Post post = postRepository.findByPostId(postId).orElseThrow(() -> new NullPointerException("Post not found."));
-        User user = userRepository.findByEmail(postDeleteDto.getEmail()).orElseThrow(() -> new NullPointerException("User not found."));
-
-        //작성자 일치 여부
-        if(post.getUser() == null || !ObjectUtils.nullSafeEquals(user.getEmail(), post.getUser().getEmail())){
-            throw new IllegalArgumentException("작성자가 일치하지않습니다.");
-        } else{
-            // delete
-            postRepository.deleteByPostId(postId);
-        }
-        
-        // 삭제
+//        User user = userRepository.findById(data.getUserId()).orElseThrow(() -> new NullPointerException("User not found."));
+//
+//        //작성자 일치 여부
+//        if(post.getUser() == null || !ObjectUtils.nullSafeEquals(user.getId(), post.getUser.getId())){
+//            throw new IllegalArgumentException("작성자가 일치하지않습니다.");
+//        } else{
+//            // delete
+//            postRepository.deleteByPostId(postId)
+//        }
         postRepository.deleteByPostId(postId);
     }
 
@@ -119,7 +116,7 @@ public class PostService {
         User user = findUserByEmail(userEmail);
         String name = user.getUsername();
         Pageable pageable = PageRequest.of(page-1,size);
-        Page<Post> posts = postRepository.findByWriterOrderByUpdatedAtDesc(name,pageable);
+        Page<Post> posts = postRepository.findByWriterOrderByModifiedAtDesc(name,pageable);
 
         return posts.map(post -> new PostSimpleResponseDto(post));
     }
