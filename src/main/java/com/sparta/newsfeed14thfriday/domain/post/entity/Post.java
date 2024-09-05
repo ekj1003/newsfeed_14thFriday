@@ -1,11 +1,15 @@
 package com.sparta.newsfeed14thfriday.domain.post.entity;
 
+import com.sparta.newsfeed14thfriday.domain.comment.entity.Comment;
 import com.sparta.newsfeed14thfriday.domain.post_like.entity.PostLike;
 import com.sparta.newsfeed14thfriday.domain.user.entity.User;
 import com.sparta.newsfeed14thfriday.entity_common.Timestamped;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -25,8 +29,8 @@ public class Post extends Timestamped {
 
     private String writer;
 
-    //   @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
-    //  private List<Comment> comments = new ArrayList<>();
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+    private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private Set<PostLike> postLike;
