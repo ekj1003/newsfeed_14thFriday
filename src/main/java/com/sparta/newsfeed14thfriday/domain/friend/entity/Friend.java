@@ -28,6 +28,9 @@ public class Friend {
     @Column(name = "status")
     private String status;
 
+    @Column(name = "invite")
+    private String invite;
+
     public Friend(User user, User friend) {
         this.user = user;
         this.friend = friend;
@@ -38,6 +41,14 @@ public class Friend {
     //수락
     public void accept() {
         this.status = "ACCEPTED";
+    }
+
+    public void send(){
+        this.invite = "SEND";
+    }
+
+    public void receive(){
+        this.invite = "RECEIVE";
     }
 
     // 친구 요청이 수락되었는지 여부를 확인하는 메서드
