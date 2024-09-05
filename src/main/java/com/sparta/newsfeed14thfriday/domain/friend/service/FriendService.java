@@ -31,8 +31,11 @@ public class FriendService {
         });
 
 
-        Friend newFriend = new Friend(user, friend);
-        return friendRepository.save(newFriend);
+        Friend newFriend1 = new Friend(user, friend);
+        Friend newFriend2 = new Friend(friend, user);
+        friendRepository.save(newFriend1);
+        friendRepository.save(newFriend2);
+        return newFriend1;
     }
 
     // 친구 리스트 조회
@@ -66,7 +69,6 @@ public class FriendService {
     public void acceptFriendRequest(Long friendId, String receiverEmail) {
         Friend friend = friendRepository.findById(friendId)
                 .orElseThrow(() -> new IllegalArgumentException("친구요청하신 친구가 없습니다: " + friendId));
-
         // 요청한 사용자가 요청을 받은 사람인지 확인
         if (!friend.getFriend().getEmail().equals(receiverEmail)) {
             throw new IllegalArgumentException("이메일이 틀립니다");
