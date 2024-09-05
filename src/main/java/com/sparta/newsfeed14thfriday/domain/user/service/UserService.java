@@ -2,21 +2,19 @@ package com.sparta.newsfeed14thfriday.domain.user.service;
 
 
 import com.sparta.newsfeed14thfriday.domain.auth.exception.AuthException;
+import com.sparta.newsfeed14thfriday.domain.friend.entity.Friend;
+import com.sparta.newsfeed14thfriday.domain.friend.repository.FriendRepository;
 import com.sparta.newsfeed14thfriday.domain.post.entity.Post;
 import com.sparta.newsfeed14thfriday.domain.post.repository.PostRepository;
 import com.sparta.newsfeed14thfriday.domain.user.dto.request.UserChangePwdRequestDto;
 import com.sparta.newsfeed14thfriday.domain.user.dto.request.UserDeleteRequestDto;
 import com.sparta.newsfeed14thfriday.domain.user.dto.request.UserProfileUpdateRequestDto;
 import com.sparta.newsfeed14thfriday.domain.user.dto.request.UserStatusMessageRequestDto;
-import com.sparta.newsfeed14thfriday.domain.user.dto.response.UserGetPostsResponseDto;
-import com.sparta.newsfeed14thfriday.domain.user.dto.response.UserProfileResponseDto;
-import com.sparta.newsfeed14thfriday.domain.user.dto.response.UserProfileUpdateResponseDto;
-import com.sparta.newsfeed14thfriday.domain.user.dto.response.UserStatusMessageResponseDto;
+import com.sparta.newsfeed14thfriday.domain.user.dto.response.*;
 import com.sparta.newsfeed14thfriday.domain.user.entity.User;
 import com.sparta.newsfeed14thfriday.domain.user.repository.UserRepository;
 import com.sparta.newsfeed14thfriday.exception.AlreadyDeletedUserException;
 import com.sparta.newsfeed14thfriday.exception.DeletedUserIdException;
-import com.sparta.newsfeed14thfriday.exception.DuplicateNameException;
 import com.sparta.newsfeed14thfriday.exception.EmailNotFoundException;
 
 import com.sparta.newsfeed14thfriday.global.config.PasswordEncoder;
@@ -29,7 +27,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import java.util.List;
 import java.util.regex.Pattern;
 
 @Slf4j
@@ -41,6 +39,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final PostRepository postRepository;
+    private final FriendRepository friendRepository;
 
     //유저 단건 조회
     public UserProfileResponseDto getProfile(String tokenEmail,String userEmail) {
@@ -57,7 +56,7 @@ public class UserService {
     //유저 이름변경
     //게시물 수정, 삭제는 작성자 본인만 처리할 수 있습니다. jwt토큰으로 해결하는방법을찾아보자.
     //문제 해결
-    //작성자가 아닌 다른 사용자가 게시물 수정 -> @Pathvariable로 받은 PathUserEmail과 userEmail이 같을때만 수정할수 있도록 수정했습니다!!
+    //작성자가 아닌 다른 사용자가 게시물 수정 -> @Pathvariable로 받은 PathUserEmail과 토큰값에서 추출한 userEmail이 같을때만 수정할수 있도록 수정했습니다!!
     // , 삭제를 시도하는 경우 예외처리를하자
     public UserProfileUpdateResponseDto updateProfile(String pathUserEmail,String userEmail, UserProfileUpdateRequestDto requestDto) {
         //유저를찾습니다
@@ -74,10 +73,13 @@ public class UserService {
 
     @Transactional
     //상태메시지 변경
-    public UserStatusMessageResponseDto updateStatusMessage(String userEmail, UserStatusMessageRequestDto requestDto) {
+    public UserStatusMessageResponseDto updateStatusMessage(String pathUserEmail,String userEmail, UserStatusMessageRequestDto requestDto) {
         //유저 찾기
         User user = findUserByEmail(userEmail);
         //상태메시지 받아오기
+        if(!pathUserEmail.equals(userEmail)){
+            throw new AuthException("권한이 없습니다");
+        }
         String newStatusMessage = requestDto.getStatusMessage();
         //상태메시지 업데이트
         user.updateStatusMessage(newStatusMessage);
@@ -144,10 +146,26 @@ public class UserService {
     //특정유저의 포스트 페이징처리 전체조회.
     public Page<UserGetPostsResponseDto> getUserPosts(int page,int size,String userEmail) {
         User user = findUserByEmail(userEmail);
-        String name = user.getUsername();
         Pageable pageable = PageRequest.of(page-1,size);
-        Page<Post> posts = postRepository.findByWriterOrderByUpdatedAtDesc(name,pageable);
+        Page<Post> posts = postRepository.findByUser_EmailOrderByModifiedAtDesc(user.getEmail(),pageable);
+
 
         return posts.map(post -> new UserGetPostsResponseDto(post));
+    }
+
+    public Page<UserNewsfeedResponseDto> getNewsfeed(int page,int size,String userEmail, String token) {
+        User user = findUserByEmail(userEmail);
+        //상태메시지 받아오기
+        if(!userEmail.equals(token)){
+            throw new AuthException("권한이 없습니다");
+        }
+        Pageable pageable = PageRequest.of(page-1,size);
+        List<Friend> friends = friendRepository.findByUser(user);
+
+
+        List<String> friendsEmailsList = friends.stream().map(friend -> friend.getFriend().getEmail()).toList();
+        Page<Post> friendsPost = postRepository.findAllByUser_EmailIn(friendsEmailsList,pageable);
+
+        return friendsPost.map(post -> new UserNewsfeedResponseDto(post));
     }
 }

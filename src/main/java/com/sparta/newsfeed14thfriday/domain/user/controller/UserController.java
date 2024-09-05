@@ -14,6 +14,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
@@ -22,6 +24,15 @@ public class UserController {
 
     private final UserService userService;
 
+    @GetMapping("/newsfeed/{userEmail}")
+    public Page<UserNewsfeedResponseDto> getNewsfeed(
+            @PathVariable String userEmail,
+            @TokenUserEmail String token,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "10") int size) {
+            return userService.getNewsfeed(page,size,userEmail,token);
+
+    }
     //유저의 이메일을 기반으로 유저 정보를 조회합니다.
     //필수 :- **프로필 조회 기능**
     //    - 다른 사용자의 프로필 조회 시, 민감한 정보는 표시되지 않습니다.
@@ -44,21 +55,25 @@ public class UserController {
     //- 비밀번호 수정 조건
     //    - 비밀번호 수정 시, 본인 확인을 위해 현재 비밀번호를 입력하여 올바른 경우에만 수정할 수 있습니다.
     //    - 현재 비밀번호와 동일한 비밀번호로는 변경할 수 없습니다.
+    // @Request String userName
     @PutMapping("/user-management/{pathUserEmail}/profiles")
     public ApiResponse<UserProfileUpdateResponseDto> updateProfile(
             @PathVariable String pathUserEmail,
             @TokenUserEmail String userEmail, //Token에서 쪼갠 claim에 존재하는 Email을 리턴받습니다.
             @RequestBody UserProfileUpdateRequestDto requestDto) {
         UserProfileUpdateResponseDto responseDto = userService.updateProfile(pathUserEmail,userEmail,requestDto);
+
         log.info("유저 정보 수정");
+
         return ApiResponse.createSuccess("유저 프로필 업데이트 완료",HttpStatus.CREATED.value(),responseDto);
     }
     //유저의 상태메시지를 수정합니다.
-    @PutMapping("/user-management/{userEmail}/profiles/status-messages")
+    @PutMapping("/user-management/{pathUserEmail}/profiles/status-messages")
     public ApiResponse<UserStatusMessageResponseDto> updateStatusMessage(
-            @PathVariable String userEmail,
+            @PathVariable String pathUserEmail,
+            @TokenUserEmail String userEmail,
             @RequestBody UserStatusMessageRequestDto requestDto) {
-        UserStatusMessageResponseDto responseDto = userService.updateStatusMessage(userEmail,requestDto);
+        UserStatusMessageResponseDto responseDto = userService.updateStatusMessage(pathUserEmail,userEmail,requestDto);
         log.info("유저 상태 메시지 수정");
         return ApiResponse.createSuccess("유저 상태 메시지 업데이트 완료",HttpStatus.CREATED.value(), responseDto);
 
