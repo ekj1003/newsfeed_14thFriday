@@ -1,11 +1,15 @@
 package com.sparta.newsfeed14thfriday.domain.post.entity;
 
+import com.sparta.newsfeed14thfriday.domain.comment.entity.Comment;
 import com.sparta.newsfeed14thfriday.domain.post_like.entity.PostLike;
 import com.sparta.newsfeed14thfriday.domain.user.entity.User;
 import com.sparta.newsfeed14thfriday.entity_common.Timestamped;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -23,8 +27,10 @@ public class Post extends Timestamped {
     @Column(length = 500, nullable = false)
     private String contents;
 
-    //   @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
-    //  private List<Comment> comments = new ArrayList<>();
+    private String writer;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+    private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private Set<PostLike> postLike;
@@ -34,7 +40,7 @@ public class Post extends Timestamped {
     private Long postLikeCount=0L;
 
     // 유저 아이디 FK
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "email", nullable = false)
     private User user;
 
@@ -43,6 +49,7 @@ public class Post extends Timestamped {
         newPost.title = title;
         newPost.contents = contents;
         newPost.user = user;
+        newPost.writer = user.getUsername();
 
         return newPost;
     }
