@@ -1,6 +1,6 @@
 package com.sparta.newsfeed14thfriday.domain.post.controller;
 
-import com.sparta.newsfeed14thfriday.domain.post.dto.request.PostDeleteDto;
+import com.sparta.newsfeed14thfriday.domain.post.dto.request.PostDeleteRequestDto;
 import com.sparta.newsfeed14thfriday.domain.post.dto.request.PostSaveRequestDto;
 import com.sparta.newsfeed14thfriday.domain.post.dto.request.PostUpdateRequestDto;
 import com.sparta.newsfeed14thfriday.domain.post.dto.response.PostDetailResponseDto;
@@ -56,7 +56,7 @@ public class PostController {
     // 게시물 삭제
     @DeleteMapping("/posts/{postId}")
     public void deleteUser(@TokenUserEmail String Token,
-            @PathVariable Long postId, @RequestBody PostDeleteDto postDeleteDto){
+            @PathVariable Long postId, @RequestBody PostDeleteRequestDto postDeleteDto){
         postService.deletePost(Token,postId, postDeleteDto);
     }
 

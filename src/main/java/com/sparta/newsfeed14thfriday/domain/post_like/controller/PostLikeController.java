@@ -18,5 +18,8 @@ public class PostLikeController {
     }
 
     // 좋아요 삭제
-    //@DeleteMapping("/posts/{postId}/likes/{likesId}")
+    @DeleteMapping("/posts/{postId}/likes")
+    public Long deletePostLike(@PathVariable Long postId, @RequestBody PostLikeCreateRequestDto postLikeCreateRequestDto){
+        return postLikeService.deletePostLike(postId, postLikeCreateRequestDto);
+    }
 }

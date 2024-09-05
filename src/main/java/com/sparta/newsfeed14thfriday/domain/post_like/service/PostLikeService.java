@@ -1,5 +1,6 @@
 package com.sparta.newsfeed14thfriday.domain.post_like.service;
 
+import com.sparta.newsfeed14thfriday.domain.post.dto.response.PostUpdateResponseDto;
 import com.sparta.newsfeed14thfriday.domain.post.entity.Post;
 import com.sparta.newsfeed14thfriday.domain.post.repository.PostRepository;
 import com.sparta.newsfeed14thfriday.domain.post_like.dto.request.PostLikeCreateRequestDto;
@@ -32,8 +33,6 @@ public class PostLikeService {
         if(postLikeRespository.findByEmailAndPostId(postLikeCreateRequestDto.getEmail(), postId).isPresent()){
             throw new RuntimeException("좋아요를 이미 누르셨습니다.");
         }
-
-
         
         // 생성: Post Entity
         PostLike postLike = PostLike.createPostLike(
@@ -43,7 +42,7 @@ public class PostLikeService {
 
         // 저장: PostLike
         PostLike savedPostLike = postLikeRespository.save(postLike);
-        post.updatePostLikeCount();
+        updateCountPostLike(postId);
 
         // 응답 반환
         return new PostLikeCreateResponseDto(
@@ -52,5 +51,36 @@ public class PostLikeService {
             savedPostLike.getPostLikeId()
         );
 
+    }
+
+    public Long deletePostLike(Long postId, PostLikeCreateRequestDto postLikeCreateRequestDto) {
+        // 조회: 유저 존재 여부, 게시물 존재 여부
+        User user = userRepository.findByEmail(postLikeCreateRequestDto.getEmail())
+            .orElseThrow(() -> new NullPointerException("User not found"));
+
+        Post post = postRepository.findByPostId(postId)
+            .orElseThrow(() -> new NullPointerException("Post not found"));
+
+        // 이미 있는지
+        if(!postLikeRespository.findByEmailAndPostId(postLikeCreateRequestDto.getEmail(), postId).isPresent()){
+            throw new RuntimeException("좋아요를 누른적이없습니다.");
+        }
+
+        // 삭제: PostLike
+        postLikeRespository.deleteById(postId);
+        updateCountPostLike(postId);
+
+        // 응답 반환
+        return postId;
+
+    }
+
+    public void updateCountPostLike(Long postId){
+        Post post = postRepository.findByPostId(postId).orElseThrow(() ->
+            new NullPointerException("Post not found."));
+
+        Long count = postLikeRespository.countByPost_PostId(postId);
+        post.updateCount(count);
+        postRepository.save(post);
     }
 }
