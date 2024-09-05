@@ -6,6 +6,7 @@ import com.sparta.newsfeed14thfriday.domain.user.dto.response.*;
 import com.sparta.newsfeed14thfriday.domain.user.dto.request.UserProfileUpdateRequestDto;
 import com.sparta.newsfeed14thfriday.domain.user.dto.request.UserStatusMessageRequestDto;
 import com.sparta.newsfeed14thfriday.domain.user.service.UserService;
+import com.sparta.newsfeed14thfriday.entity_common.ApiPageResponse;
 import com.sparta.newsfeed14thfriday.entity_common.ApiResponse;
 import com.sparta.newsfeed14thfriday.global.config.TokenUserEmail;
 import lombok.RequiredArgsConstructor;
@@ -25,12 +26,13 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/newsfeed/{userEmail}")
-    public Page<UserNewsfeedResponseDto> getNewsfeed(
+    public ApiPageResponse<UserNewsfeedResponseDto> getNewsfeed(
             @PathVariable String userEmail,
             @TokenUserEmail String token,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size) {
-            return userService.getNewsfeed(page,size,userEmail,token);
+        Page<UserNewsfeedResponseDto> responseDtoPage = userService.getNewsfeed(page,size,userEmail,token);
+            return ApiPageResponse.createSuccess("뉴스피드 조회 완료",HttpStatus.CREATED.value(),responseDtoPage);
 
     }
     //유저의 이메일을 기반으로 유저 정보를 조회합니다.
@@ -45,11 +47,12 @@ public class UserController {
         return ApiResponse.createSuccess("유저 프로필 조회 완료", HttpStatus.CREATED.value(), responseDto);
     }
     @GetMapping("/{userEmail}/posts")
-    public Page<UserGetPostsResponseDto> getUserPosts(
+    public ApiPageResponse<UserGetPostsResponseDto> getUserPosts(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size,
             @PathVariable String userEmail) {
-        return userService.getUserPosts(page,size,userEmail);
+        Page<UserGetPostsResponseDto> responseDtoPage = userService.getUserPosts(page,size,userEmail);
+        return ApiPageResponse.createSuccess("유저의 포스트 조회 완료",HttpStatus.CREATED.value(),responseDtoPage);
     }
     //유저의 정보를 수정합니다.
     //- 비밀번호 수정 조건

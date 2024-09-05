@@ -53,8 +53,9 @@ public class Post extends Timestamped {
 
         return newPost;
     }
-
-
+    public void increaseCommentCount() {
+        commentCount++;
+    }
 
     public void update(String title, String contents) {
         this.title = title;
