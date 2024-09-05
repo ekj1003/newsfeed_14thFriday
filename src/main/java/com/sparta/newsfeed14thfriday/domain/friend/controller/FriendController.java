@@ -5,6 +5,7 @@ import com.sparta.newsfeed14thfriday.domain.friend.dto.FriendList.FriendListResp
 import com.sparta.newsfeed14thfriday.domain.friend.dto.FriendList.UserEmailRequestDto;
 import com.sparta.newsfeed14thfriday.domain.friend.entity.Friend;
 import com.sparta.newsfeed14thfriday.domain.friend.service.FriendService;
+import com.sparta.newsfeed14thfriday.global.config.TokenUserEmail;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -22,9 +23,10 @@ public class FriendController {
 
     // 친구 저장
     @PostMapping
-    public ResponseEntity<FriendListResponseDto> createFriend(@RequestBody FriendListRequestDto requestDto) {
+    public ResponseEntity<FriendListResponseDto> createFriend(@TokenUserEmail String token,
+            @RequestBody FriendListRequestDto requestDto) {
         try {
-            Friend savedFriend = friendService.saveFriend(requestDto);
+            Friend savedFriend = friendService.saveFriend(token,requestDto);
             // 저장된 친구 정보를 FriendListResponseDto로 반환
             FriendListResponseDto dto = new FriendListResponseDto(
                     savedFriend.getId(),
@@ -54,21 +56,24 @@ public class FriendController {
 
     // 친구 요청 수락
     @PostMapping("/accept")
-    public ResponseEntity<String> acceptFriendRequest(@RequestBody FriendListRequestDto requestDto) {
-        friendService.acceptFriendRequest(requestDto.getUserEmail(), requestDto.getFriendEmail());
+    public ResponseEntity<String> acceptFriendRequest(@TokenUserEmail String token,
+            @RequestBody FriendListRequestDto requestDto) {
+        friendService.acceptFriendRequest(token,requestDto.getUserEmail(), requestDto.getFriendEmail());
         return new ResponseEntity<>("친구 추가 수락", HttpStatus.OK);
     }
 
     // 친구 요청 거절
     @PostMapping("/reject")
-    public ResponseEntity<String> rejectFriendRequest(@RequestBody FriendListRequestDto requestDto) {
-        friendService.rejectFriendRequest(requestDto.getUserEmail(), requestDto.getFriendEmail());
+    public ResponseEntity<String> rejectFriendRequest(@TokenUserEmail String token,
+            @RequestBody FriendListRequestDto requestDto) {
+        friendService.rejectFriendRequest(token,requestDto.getUserEmail(), requestDto.getFriendEmail());
         return new ResponseEntity<>("친구 추가 거절", HttpStatus.OK);
     }
 
     @DeleteMapping
-    public ResponseEntity<String> deleteFriend(@RequestBody FriendListRequestDto requestDto) {
-        friendService.deleteFriend(requestDto.getUserEmail(), requestDto.getFriendEmail());
+    public ResponseEntity<String> deleteFriend(@TokenUserEmail String token,
+            @RequestBody FriendListRequestDto requestDto) {
+        friendService.deleteFriend(token,requestDto.getUserEmail(), requestDto.getFriendEmail());
         return new ResponseEntity<>("친구 삭제", HttpStatus.NO_CONTENT);
     }
 }

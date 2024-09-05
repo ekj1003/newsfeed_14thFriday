@@ -1,11 +1,13 @@
 package com.sparta.newsfeed14thfriday.domain.friend.service;
 
+import com.sparta.newsfeed14thfriday.domain.auth.exception.AuthException;
 import com.sparta.newsfeed14thfriday.domain.friend.dto.FriendList.FriendListRequestDto;
 import com.sparta.newsfeed14thfriday.domain.friend.dto.FriendList.FriendListResponseDto;
 import com.sparta.newsfeed14thfriday.domain.friend.entity.Friend;
 import com.sparta.newsfeed14thfriday.domain.friend.repository.FriendRepository;
 import com.sparta.newsfeed14thfriday.domain.user.entity.User;
 import com.sparta.newsfeed14thfriday.domain.user.repository.UserRepository;
+import com.sparta.newsfeed14thfriday.global.config.TokenUserEmail;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,11 +21,15 @@ public class FriendService {
     private final UserRepository userRepository;
 
     // 친구 저장
-    public Friend saveFriend(FriendListRequestDto requestDto) {
+    public Friend saveFriend(String token,FriendListRequestDto requestDto) {
         User user = userRepository.findByEmail(requestDto.getUserEmail())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일: " + requestDto.getUserEmail()));
         User friend = userRepository.findByEmail(requestDto.getFriendEmail())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 친구이메일: " + requestDto.getFriendEmail()));
+
+        if(!requestDto.getUserEmail().equals(token)){
+            throw new AuthException("권한이 없습니다");
+        }
 
         // 중복된 친구 관계가 존재하는지 확인
         friendRepository.findByUserAndFriend(user, friend).ifPresent(existingFriend -> {
@@ -76,7 +82,7 @@ public class FriendService {
     }
 
     // 친구 요청 수락
-    public void acceptFriendRequest(String userEmail, String friendEmail) {
+    public void acceptFriendRequest(String token,String userEmail, String friendEmail) {
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 이메일: " + userEmail));
         User friend = userRepository.findByEmail(friendEmail)
@@ -85,11 +91,17 @@ public class FriendService {
         Friend friendRequest = friendRepository.findByUserAndFriend(user, friend)
                 .orElseThrow(() -> new IllegalArgumentException("친구 요청이 존재하지 않습니다: " + userEmail + "와 " + friendEmail));
 
+
         if(!friendRequest.getInvite().equals("RECEIVE")) {
             throw new IllegalArgumentException("요청받은 인원이 아닙니다");
         }
 
         // 이미 수락된 친구 요청인지 확인
+
+        if(!userEmail.equals(token)){
+            throw new AuthException("권한이 없습니다");
+        }
+
         if (friendRequest.isAccepted()) {
             throw new IllegalArgumentException("이미 수락된 친구 요청입니다.");
         }
@@ -107,12 +119,14 @@ public class FriendService {
     }
 
     // 친구 요청 거절 (데이터베이스에서 삭제)
-    public void rejectFriendRequest(String userEmail, String friendEmail) {
+    public void rejectFriendRequest(String token,String userEmail, String friendEmail) {
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 이메일: " + userEmail));
         User friend = userRepository.findByEmail(friendEmail)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 친구 이메일: " + friendEmail));
-
+        if(!userEmail.equals(token)){
+            throw new AuthException("권한이 없습니다");
+        }
         Friend friendRequest = friendRepository.findByUserAndFriend(user, friend)
                 .orElseThrow(() -> new IllegalArgumentException("친구 요청이 존재하지 않습니다: " + userEmail + "와 " + friendEmail));
 
@@ -120,16 +134,21 @@ public class FriendService {
     }
 
     // 친구 삭제
-    public void deleteFriend(String userEmail, String friendEmail) {
+    public void deleteFriend(String token,String userEmail, String friendEmail) {
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 이메일: " + userEmail));
         User friend = userRepository.findByEmail(friendEmail)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 친구 이메일: " + friendEmail));
 
+        if(!userEmail.equals(token)){
+            throw new AuthException("권한이 없습니다");
+        }
+
         Friend friendRequest1 = friendRepository.findByUserAndFriend(user, friend)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 친구 관계입니다: " + userEmail + "와 " + friendEmail));
         Friend friendRequest2 = friendRepository.findByUserAndFriend(friend, user)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 친구 관계입니다: " + userEmail + "와 " + friendEmail));
+
         friendRepository.delete(friendRequest1);
         friendRepository.delete(friendRequest2);
     }
