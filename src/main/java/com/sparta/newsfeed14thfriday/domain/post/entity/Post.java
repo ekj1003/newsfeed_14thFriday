@@ -67,9 +67,6 @@ public class Post extends Timestamped {
     public void delete(){
         this.deleted=true;
     }
-    public void updatePostLikeCount() {
-
-
     public void updateCount(Long countByPostId) {
         this.postLikeCount = countByPostId;
     }
