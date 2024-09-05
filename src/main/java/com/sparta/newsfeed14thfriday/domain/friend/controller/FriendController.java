@@ -16,15 +16,23 @@ import java.util.List;
 public class FriendController {
     private final FriendService friendService;
 
+
+
     // 친구 저장
     @PostMapping("/friends")
     public ResponseEntity<FriendListResponseDto> createFriend(@RequestBody FriendListRequestDto requestDto) {
-        Friend savedFriend = friendService.saveFriend(requestDto);
-        FriendListResponseDto dto = new FriendListResponseDto(
-                savedFriend.getId(),
-                savedFriend.getFriend().getEmail() // User 객체에서 이메일 추출
-        );
-        return new ResponseEntity<>(dto, HttpStatus.CREATED);
+        try {
+            Friend savedFriend = friendService.saveFriend(requestDto);
+            // 저장된 친구 정보를 FriendListResponseDto로 반환
+            FriendListResponseDto dto = new FriendListResponseDto(
+                    savedFriend.getId(),
+                    savedFriend.getFriend().getEmail() // 친구의 이메일 반환
+            );
+            return new ResponseEntity<>(dto, HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            // 중복 친구 요청일 경우 에러 메시지 반환
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
     }
 
     // 친구 리스트 조회
@@ -40,6 +48,30 @@ public class FriendController {
         FriendListResponseDto friend = friendService.getFriendById(friendId);
         return new ResponseEntity<>(friend, HttpStatus.OK);
     }
+
+    // 친구 요청 수락
+    @PostMapping("/friends/{id}/accept")
+    public ResponseEntity<String> acceptFriendRequest(@PathVariable("id") Long friendId, @RequestBody String receiverEmail) {
+        friendService.acceptFriendRequest(friendId, receiverEmail);
+        return new ResponseEntity<>("Friend request accepted", HttpStatus.OK);
+    }
+
+    // 친구 요청 거절
+    @PostMapping("/friends/{id}/reject")
+    public ResponseEntity<String> rejectFriendRequest(@PathVariable("id") Long friendId, @RequestBody String receiverEmail) {
+        friendService.rejectFriendRequest(friendId, receiverEmail);
+        return new ResponseEntity<>("Friend request rejected", HttpStatus.OK);
+    }
+
+    // 친구 삭제
+    @DeleteMapping("/friends/{id}")
+    public ResponseEntity<String> deleteFriend(@PathVariable("id") Long friendId) {
+        friendService.deleteFriend(friendId);
+        return new ResponseEntity<>("Friend deleted", HttpStatus.NO_CONTENT);
+    }
+
+
+
 
 
 }

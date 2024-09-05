@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Friend {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "friend_id")
@@ -24,9 +25,21 @@ public class Friend {
     @JoinColumn(name = "friend_email")
     private User friend;
 
+    @Column(name = "status")
+    private String status;
+
     public Friend(User user, User friend) {
         this.user = user;
         this.friend = friend;
+    }
+
+    //수락
+    public void accept() {
+        this.status = "ACCEPTED";
+    }
+    //거절
+    public void reject() {
+        this.status = "REJECTED";
     }
 
 }
