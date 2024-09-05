@@ -7,8 +7,6 @@ public class CommentSaveRequestDto {
 
     private long commentId;
     private String contents;
-    private long commentLikeCount;
-    private Boolean deleted;
 
     private String email;
     private long postId;
