@@ -4,5 +4,5 @@ import lombok.Getter;
 
 @Getter
 public class CommentDeleteRequestDto {
-    private String email;
+    private String userEmail;
 }

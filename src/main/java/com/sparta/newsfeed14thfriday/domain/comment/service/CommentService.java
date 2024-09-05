@@ -130,7 +130,7 @@ public class CommentService {
     public void deleteCommentUpdate(Long commentId, CommentDeleteRequestDto commentDeleteRequestDto){
         Comment comment = findCommentById(commentId);
 
-        User email = userRepository.findByEmail(commentDeleteRequestDto.getEmail())
+        User email = userRepository.findByEmail(commentDeleteRequestDto.getUserEmail())
                 .orElseThrow(()-> new NullPointerException("User not found"));
 
         // 가독성을 위해서 이름 바꾸는거 생각
