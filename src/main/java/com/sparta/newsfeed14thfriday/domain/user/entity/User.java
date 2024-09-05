@@ -1,15 +1,9 @@
 package com.sparta.newsfeed14thfriday.domain.user.entity;
 
-import com.sparta.newsfeed14thfriday.domain.friend.entity.Friend;
-import com.sparta.newsfeed14thfriday.domain.post.entity.Post;
-import com.sparta.newsfeed14thfriday.domain.post_like.entity.PostLike;
 import com.sparta.newsfeed14thfriday.entity_common.Timestamped;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Entity
@@ -30,7 +24,7 @@ public class User extends Timestamped {
     private String password;
 
     //기본값은 false true 상태라면 삭제된 상태입니다.
-    private boolean deleted = false;
+    private Boolean deleted = false;
 
     private Long friendsCount = 0L; // 친구 수를 0으로 초기화
 

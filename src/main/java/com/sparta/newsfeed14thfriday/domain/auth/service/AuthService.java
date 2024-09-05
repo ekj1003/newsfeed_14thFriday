@@ -85,7 +85,7 @@ public class AuthService {
             throw new AuthException("잘못된 비밀번호입니다.");
         }
         //유저가 삭제되었는지 확인
-        if(!user.isDeleted()) {
+        if(!user.getDeleted()) {
             throw new AuthException("탈퇴하지 않은 회원입니다");
         }
         user.restoreUser();
