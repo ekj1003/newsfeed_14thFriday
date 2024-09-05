@@ -114,20 +114,21 @@ public class PostService {
         }
 
         //작성자 일치 여부
-        if(!ObjectUtils.nullSafeEquals(user.getEmail(), post.getUser().getEmail())){
-            throw new IllegalArgumentException("작성자가 일치하지않습니다.");
-        } else{
-            // delete
-            postRepository.deleteByPostId(postId);
-        }
-        //postRepository.deleteByPostId(postId);
+
+//        if(post.getUser() == null || !ObjectUtils.nullSafeEquals(user.getEmail(), post.getUser().getEmail())){
+//            throw new IllegalArgumentException("작성자가 일치하지않습니다.");
+//        } else{
+//            // delete
+//            postRepository.deleteByPostId(postId);
+//        }
+        post.delete();
     }
 
 
     public Page<PostSimpleResponseDto> getPosts(int page, int size, String userEmail) {
         User user = findUserByEmail(userEmail);
         Pageable pageable = PageRequest.of(page-1,size);
-        Page<Post> posts = postRepository.findByUser_EmailOrderByUpdatedAtDesc(user.getEmail(),pageable);
+        Page<Post> posts = postRepository.findByUser_EmailAndDeletedFalseOrderByUpdatedAtDesc(user.getEmail(),pageable);
 
 
         return posts.map(post -> new PostSimpleResponseDto(post));
