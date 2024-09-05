@@ -10,13 +10,4 @@ public class SignupResponseDto {
     public SignupResponseDto(String bearerToken) {
         this.bearerToken = bearerToken;
     }
-
-
-//    private String email;
-//    private String username;
-//
-//    public SignupResponseDto(User user) {
-//        this.email = user.getEmail();
-//        this.username = user.getUsername();
-//    }
 }
