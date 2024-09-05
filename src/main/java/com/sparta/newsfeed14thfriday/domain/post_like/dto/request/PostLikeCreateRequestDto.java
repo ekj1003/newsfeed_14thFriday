@@ -6,6 +6,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class PostLikeCreateRequestDto {
-    private Long userId;
+    private String email;
     private Long postId;
 }

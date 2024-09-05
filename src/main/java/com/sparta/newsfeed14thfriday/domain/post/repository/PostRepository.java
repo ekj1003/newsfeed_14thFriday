@@ -11,5 +11,5 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Optional<Post> findByPostId(Long postId);
 
     void deleteByPostId(Long postId);
-    Page<Post> findByWriterOrderByModifiedAtDesc(String writer, Pageable pageable);
+    Page<Post> findByWriterOrderByUpdatedAtDesc(String writer, Pageable pageable);
 }
