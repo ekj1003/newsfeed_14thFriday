@@ -9,6 +9,7 @@ import com.sparta.newsfeed14thfriday.domain.post.dto.response.PostSimpleResponse
 import com.sparta.newsfeed14thfriday.domain.post.dto.response.PostUpdateResponseDto;
 import com.sparta.newsfeed14thfriday.domain.post.entity.Post;
 import com.sparta.newsfeed14thfriday.domain.post.repository.PostRepository;
+import com.sparta.newsfeed14thfriday.domain.post_like.repository.PostLikeRespository;
 import com.sparta.newsfeed14thfriday.domain.user.entity.User;
 import com.sparta.newsfeed14thfriday.domain.user.repository.UserRepository;
 import com.sparta.newsfeed14thfriday.exception.DeletedUserIdException;
@@ -128,4 +129,7 @@ public class PostService {
         }
         return user;
     }
+
+
+
 }

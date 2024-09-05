@@ -61,8 +61,8 @@ public class Post extends Timestamped {
         this.contents = contents;
     }
 
-    public void updatePostLikeCount() {
 
-        this.postLikeCount = (this.postLikeCount == null ? 0L : postLikeCount) + 1;
+    public void updateCount(Long countByPostId) {
+        this.postLikeCount = countByPostId;
     }
 }

@@ -26,7 +26,7 @@ public class PostLike extends Timestamped {
     @JoinColumn(name = "email", nullable = false)
     private User user;
 
-    public static PostLike createPostLike(Post post, User user) { //User user,
+    public static PostLike createPostLike(Post post, User user) {
         PostLike postLike = new PostLike();
         postLike.post = post;
         postLike.user = user;

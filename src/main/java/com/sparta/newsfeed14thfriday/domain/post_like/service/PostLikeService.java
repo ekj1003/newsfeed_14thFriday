@@ -1,5 +1,6 @@
 package com.sparta.newsfeed14thfriday.domain.post_like.service;
 
+import com.sparta.newsfeed14thfriday.domain.post.dto.response.PostUpdateResponseDto;
 import com.sparta.newsfeed14thfriday.domain.post.entity.Post;
 import com.sparta.newsfeed14thfriday.domain.post.repository.PostRepository;
 import com.sparta.newsfeed14thfriday.domain.post_like.dto.request.PostLikeCreateRequestDto;
@@ -41,6 +42,7 @@ public class PostLikeService {
 
         // 저장: PostLike
         PostLike savedPostLike = postLikeRespository.save(postLike);
+        updateCountPostLike(postId);
 
         // 응답 반환
         return new PostLikeCreateResponseDto(
@@ -66,9 +68,19 @@ public class PostLikeService {
 
         // 삭제: PostLike
         postLikeRespository.deleteById(postId);
+        updateCountPostLike(postId);
 
         // 응답 반환
         return postId;
 
+    }
+
+    public void updateCountPostLike(Long postId){
+        Post post = postRepository.findByPostId(postId).orElseThrow(() ->
+            new NullPointerException("Post not found."));
+
+        Long count = postLikeRespository.countByPost_PostId(postId);
+        post.updateCount(count);
+        postRepository.save(post);
     }
 }
