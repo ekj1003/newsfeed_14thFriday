@@ -12,6 +12,7 @@ import com.sparta.newsfeed14thfriday.domain.post.entity.Post;
 import com.sparta.newsfeed14thfriday.domain.post.repository.PostRepository;
 import com.sparta.newsfeed14thfriday.domain.user.entity.User;
 import com.sparta.newsfeed14thfriday.domain.user.repository.UserRepository;
+import com.sparta.newsfeed14thfriday.exception.AlreadyDeletedException;
 import com.sparta.newsfeed14thfriday.exception.DeletedUserIdException;
 import com.sparta.newsfeed14thfriday.exception.EmailNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -121,6 +122,10 @@ public class PostService {
 //            // delete
 //            postRepository.deleteByPostId(postId);
 //        }
+        if(post.getDeleted())
+        {
+            throw new AlreadyDeletedException("이미 삭제된 포스트 입니다");
+        }
         post.delete();
     }
 
