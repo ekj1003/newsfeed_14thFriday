@@ -34,7 +34,7 @@ public class CommentService {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NullPointerException("Post not found"));
 
-        User email = userRepository.findByEmail(commentSaveRequestDto.getUserEmail())
+        User email = userRepository.findByEmailAndDeleted(commentSaveRequestDto.getUserEmail(),false)
                 .orElseThrow(() -> new NullPointerException("User not found"));
 
         Comment comment = new Comment(
@@ -88,7 +88,7 @@ public class CommentService {
     public CommentUpdateResponseDto updateComment(Long commentId, CommentUpdateRequestDto commentUpdateRequestDto){
         Comment comment = findCommentById(commentId);
 
-        User email = userRepository.findByEmail(commentUpdateRequestDto.getUserEmail())
+        User email = userRepository.findByEmailAndDeleted(commentUpdateRequestDto.getUserEmail(),false)
                 .orElseThrow(()-> new NullPointerException("User not found"));
 
         // 가독성을 위해서 이름 바꾸는거 생각
@@ -130,7 +130,7 @@ public class CommentService {
     public void deleteCommentUpdate(Long commentId, CommentDeleteRequestDto commentDeleteRequestDto){
         Comment comment = findCommentById(commentId);
 
-        User email = userRepository.findByEmail(commentDeleteRequestDto.getUserEmail())
+        User email = userRepository.findByEmailAndDeleted(commentDeleteRequestDto.getUserEmail(),false)
                 .orElseThrow(()-> new NullPointerException("User not found"));
 
         // 가독성을 위해서 이름 바꾸는거 생각

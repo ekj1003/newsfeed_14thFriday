@@ -6,6 +6,7 @@ import com.sparta.newsfeed14thfriday.domain.friend.entity.Friend;
 import com.sparta.newsfeed14thfriday.domain.friend.repository.FriendRepository;
 import com.sparta.newsfeed14thfriday.domain.post.entity.Post;
 import com.sparta.newsfeed14thfriday.domain.post.repository.PostRepository;
+import com.sparta.newsfeed14thfriday.domain.user.dto.UserListDto;
 import com.sparta.newsfeed14thfriday.domain.user.dto.request.UserChangePwdRequestDto;
 import com.sparta.newsfeed14thfriday.domain.user.dto.request.UserDeleteRequestDto;
 import com.sparta.newsfeed14thfriday.domain.user.dto.request.UserProfileUpdateRequestDto;
@@ -26,6 +27,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -48,7 +50,14 @@ public class UserService {
             return new UserProfileDetailResponseDto(user);
         } else {
             log.info("유저데이터디테일");
-            return new UserProfileDetailResponseDto(user);
+            List<Friend> friendList = friendRepository.findByUserAndStatus(user,"ACCEPTED");
+            List<String> friendsEmailsList = friendList.stream().map(friend -> friend.getFriend().getEmail()).toList();
+            List<User> UserList = userRepository.findAllByEmailInAndDeleted(friendsEmailsList,false);
+            List<UserListDto> userListDtos = new ArrayList<>();
+            for (User u : UserList) {
+                userListDtos.add(new UserListDto(u));
+            }
+            return new UserProfileDetailResponseDto(user,userListDtos);
         }
     }
 
@@ -87,7 +96,7 @@ public class UserService {
     }
 
     public boolean isDeletedUser(String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(EmailNotFoundException::new);
+        User user = userRepository.findByEmailAndDeleted(email,false).orElseThrow(EmailNotFoundException::new);
         if (user.isDeleted()) {
             return true;
         }
@@ -95,7 +104,7 @@ public class UserService {
     }
 
     public User findUserByEmail(String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(EmailNotFoundException::new);
+        User user = userRepository.findByEmailAndDeleted(email,false).orElseThrow(EmailNotFoundException::new);
         if (user.isDeleted()) {
             throw new DeletedUserIdException();
         }

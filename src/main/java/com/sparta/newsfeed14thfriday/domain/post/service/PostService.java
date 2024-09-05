@@ -32,7 +32,7 @@ public class PostService {
     @Transactional
     public PostSaveResponseDto createPost(String Token, PostSaveRequestDto data) {
         // 조회: 유저 존재 여부
-        User user = userRepository.findByEmail(data.getEmail())
+        User user = userRepository.findByEmailAndDeleted(data.getEmail(),false)
             .orElseThrow(() -> new NullPointerException("User not found"));
 
         if(!user.getEmail().equals(Token)){
@@ -79,7 +79,7 @@ public class PostService {
     public PostUpdateResponseDto updatePost(Long postId,String token , PostUpdateRequestDto postUpdateRequestDto) {
         // 조회: 게시물 존재 여부, 유저 존재 여부
         Post post = postRepository.findByPostId(postId).orElseThrow(() -> new NullPointerException("Post not found."));
-        User user = userRepository.findByEmail(postUpdateRequestDto.getEmail()).orElseThrow(() -> new NullPointerException("User not found."));
+        User user = userRepository.findByEmailAndDeleted(postUpdateRequestDto.getEmail(),false).orElseThrow(() -> new NullPointerException("User not found."));
 
         if(!user.getEmail().equals(token)){
             throw new AuthException("권한이 없습니다");
@@ -108,7 +108,7 @@ public class PostService {
     public void deletePost(String token, Long postId, PostDeleteRequestDto postDeleteDto) {
         // 조회: postId, userId
         Post post = postRepository.findByPostId(postId).orElseThrow(() -> new NullPointerException("Post not found."));
-        User user = userRepository.findByEmail(postDeleteDto.getEmail()).orElseThrow(() -> new NullPointerException("User not found."));
+        User user = userRepository.findByEmailAndDeleted(postDeleteDto.getEmail(),false).orElseThrow(() -> new NullPointerException("User not found."));
 
         if(!user.getEmail().equals(token)){
             throw new AuthException("권한이 없습니다");
@@ -140,7 +140,7 @@ public class PostService {
     }
 
     public User findUserByEmail(String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(EmailNotFoundException::new);
+        User user = userRepository.findByEmailAndDeleted(email,false).orElseThrow(EmailNotFoundException::new);
         if (user.isDeleted()) {
             throw new DeletedUserIdException();
         }

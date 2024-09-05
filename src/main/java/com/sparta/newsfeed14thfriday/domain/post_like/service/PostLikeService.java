@@ -1,6 +1,5 @@
 package com.sparta.newsfeed14thfriday.domain.post_like.service;
 
-import com.sparta.newsfeed14thfriday.domain.post.dto.response.PostUpdateResponseDto;
 import com.sparta.newsfeed14thfriday.domain.post.entity.Post;
 import com.sparta.newsfeed14thfriday.domain.post.repository.PostRepository;
 import com.sparta.newsfeed14thfriday.domain.post_like.dto.request.PostLikeCreateRequestDto;
@@ -11,7 +10,7 @@ import com.sparta.newsfeed14thfriday.domain.user.entity.User;
 import com.sparta.newsfeed14thfriday.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class PostLikeService {
@@ -20,7 +19,7 @@ public class PostLikeService {
     private final UserRepository userRepository;
     public PostLikeCreateResponseDto createPostLike(Long postId, PostLikeCreateRequestDto postLikeCreateRequestDto){
         // 조회: 유저 존재 여부, 게시물 존재 여부
-        User user = userRepository.findByEmail(postLikeCreateRequestDto.getEmail())
+        User user = userRepository.findByEmailAndDeleted(postLikeCreateRequestDto.getEmail(),false)
                 .orElseThrow(() -> new NullPointerException("User not found"));
         Post post = postRepository.findByPostId(postId)
                 .orElseThrow(() -> new NullPointerException("Post not found"));
@@ -48,7 +47,7 @@ public class PostLikeService {
     }
     public Long deletePostLike(Long postId, PostLikeCreateRequestDto postLikeCreateRequestDto) {
         // 조회: 유저 존재 여부, 게시물 존재 여부
-        User user = userRepository.findByEmail(postLikeCreateRequestDto.getEmail())
+        User user = userRepository.findByEmailAndDeleted(postLikeCreateRequestDto.getEmail(),false)
                 .orElseThrow(() -> new NullPointerException("User not found"));
         Post post = postRepository.findByPostId(postId)
                 .orElseThrow(() -> new NullPointerException("Post not found"));
