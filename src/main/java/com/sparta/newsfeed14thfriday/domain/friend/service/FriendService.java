@@ -73,7 +73,7 @@ public class FriendService {
         if (!friend.getFriend().getEmail().equals(receiverEmail)) {
             throw new IllegalArgumentException("이메일이 틀립니다");
         }
-
+        //이미 친구상태인경우 예외처리 필요
         friend.accept();
         friendRepository.save(friend);
     }

@@ -1,5 +1,6 @@
 package com.sparta.newsfeed14thfriday.domain.comment_like.service;
 
+import com.sparta.newsfeed14thfriday.domain.auth.exception.AuthException;
 import com.sparta.newsfeed14thfriday.domain.comment.entity.Comment;
 import com.sparta.newsfeed14thfriday.domain.comment.repository.CommentRepository;
 import com.sparta.newsfeed14thfriday.domain.comment_like.dto.request.CommentLikeRequestDto;
@@ -25,7 +26,7 @@ public class CommentLikeService {
 
 
     // 누가 어느 포스트의 어느 댓글에 좋아요를 했는지   동일인이 좋아요를 여러번 하는거 방지
-    public CommentLikeResponseDto createCommentLike(Long commentId , Long postId, CommentLikeRequestDto commentLikeRequestDto) {
+    public CommentLikeResponseDto createCommentLike(String email,Long commentId , Long postId, CommentLikeRequestDto commentLikeRequestDto) {
 
         Comment comment = commentRepository.findByCommentId(commentId)
                 .orElseThrow(()-> new NullPointerException("comment not found"));
@@ -35,6 +36,10 @@ public class CommentLikeService {
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(()-> new NullPointerException("post not found"));
+        //token에서 받아온 이메일과 request에 있는 이메일이 다르다= 본인이 다른아이디인척 좋아요누른다.
+        if(!commentLikeRequestDto.getUserEmail().equals(email)){
+            throw new AuthException("권한이 없습니다");
+        }
 
         // 이미 좋아요 한 유저인지 확인
         if (commentLikeRepository.findByCommentAndUserAndPost(comment,user,post).isPresent()){
@@ -57,7 +62,7 @@ public class CommentLikeService {
 
     // 좋아요 취소
     @Transactional
-    public void deleteCommentLike(Long commentId, Long postId, CommentLikeRequestDto commentLikeRequestDto) {
+    public void deleteCommentLike(String email,Long commentId, Long postId, CommentLikeRequestDto commentLikeRequestDto) {
 
         Comment comment = commentRepository.findByCommentId(commentId)
                 .orElseThrow(()-> new NullPointerException("comment not found"));
@@ -67,7 +72,10 @@ public class CommentLikeService {
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(()-> new NullPointerException("post not found"));
-
+        //token에서 받아온 이메일과 request에 있는 이메일이 다르다= 본인이 다른아이디인척 좋아요를 취소한다.
+        if(!commentLikeRequestDto.getUserEmail().equals(email)){
+            throw new AuthException("권한이 없습니다");
+        }
 
         // 이미 좋아요 한 유저인지 확인
         if (commentLikeRepository.findByCommentAndUserAndPost(comment,user,post).isPresent()){

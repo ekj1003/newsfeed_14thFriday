@@ -4,7 +4,9 @@ import com.sparta.newsfeed14thfriday.domain.friend.dto.FriendList.FriendListRequ
 import com.sparta.newsfeed14thfriday.domain.friend.dto.FriendList.FriendListResponseDto;
 import com.sparta.newsfeed14thfriday.domain.friend.entity.Friend;
 import com.sparta.newsfeed14thfriday.domain.friend.service.FriendService;
+import com.sparta.newsfeed14thfriday.global.config.TokenUserEmail;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class FriendController {
     private final FriendService friendService;
 
@@ -31,6 +34,7 @@ public class FriendController {
             return new ResponseEntity<>(dto, HttpStatus.CREATED);
         } catch (IllegalArgumentException e) {
             // 중복 친구 요청일 경우 에러 메시지 반환
+            log.info("중복 친구 요청입니다.");
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
@@ -51,14 +55,14 @@ public class FriendController {
 
     // 친구 요청 수락
     @PostMapping("/friends/{id}/accept")
-    public ResponseEntity<String> acceptFriendRequest(@PathVariable("id") Long friendId, @RequestBody String receiverEmail) {
+    public ResponseEntity<String> acceptFriendRequest(@PathVariable("id") Long friendId, @TokenUserEmail String receiverEmail) {
         friendService.acceptFriendRequest(friendId, receiverEmail);
         return new ResponseEntity<>("Friend request accepted", HttpStatus.OK);
     }
 
     // 친구 요청 거절
     @PostMapping("/friends/{id}/reject")
-    public ResponseEntity<String> rejectFriendRequest(@PathVariable("id") Long friendId, @RequestBody String receiverEmail) {
+    public ResponseEntity<String> rejectFriendRequest(@PathVariable("id") Long friendId, @TokenUserEmail String receiverEmail) {
         friendService.rejectFriendRequest(friendId, receiverEmail);
         return new ResponseEntity<>("Friend request rejected", HttpStatus.OK);
     }

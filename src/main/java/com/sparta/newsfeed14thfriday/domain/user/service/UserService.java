@@ -164,7 +164,7 @@ public class UserService {
 
 
         List<String> friendsEmailsList = friends.stream().map(friend -> friend.getFriend().getEmail()).toList();
-        Page<Post> friendsPost = postRepository.findAllByUser_EmailInAndDeletedFalseOrderByUpdatedAt(friendsEmailsList,pageable);
+        Page<Post> friendsPost = postRepository.findAllByUser_EmailInAndDeletedFalseOrderByUpdatedAtDesc(friendsEmailsList,pageable);
 
         return friendsPost.map(post -> new UserNewsfeedResponseDto(post));
     }
