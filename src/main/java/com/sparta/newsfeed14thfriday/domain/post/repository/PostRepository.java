@@ -23,7 +23,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     Page<Post> findByCreatedAtBetween(LocalDateTime startDateTime, LocalDateTime endDateTime, Pageable pageable);
 
-    Page<Post> findAllByUser_EmailInAndDeletedFalseOrderByUpdatedAt(List<String> email, Pageable pageable);
+    Page<Post> findAllByUser_EmailInAndDeletedFalseOrderByUpdatedAtDesc(List<String> email, Pageable pageable);
 
 
 
