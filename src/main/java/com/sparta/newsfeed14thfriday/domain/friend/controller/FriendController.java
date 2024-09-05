@@ -57,21 +57,21 @@ public class FriendController {
     @PostMapping("/friends/{id}/accept")
     public ResponseEntity<String> acceptFriendRequest(@PathVariable("id") Long friendId, @TokenUserEmail String receiverEmail) {
         friendService.acceptFriendRequest(friendId, receiverEmail);
-        return new ResponseEntity<>("Friend request accepted", HttpStatus.OK);
+        return new ResponseEntity<>("친구 추가 수락", HttpStatus.OK);
     }
 
     // 친구 요청 거절
     @PostMapping("/friends/{id}/reject")
     public ResponseEntity<String> rejectFriendRequest(@PathVariable("id") Long friendId, @TokenUserEmail String receiverEmail) {
         friendService.rejectFriendRequest(friendId, receiverEmail);
-        return new ResponseEntity<>("Friend request rejected", HttpStatus.OK);
+        return new ResponseEntity<>("친구 추가 거절", HttpStatus.OK);
     }
 
     // 친구 삭제
     @DeleteMapping("/friends/{id}")
     public ResponseEntity<String> deleteFriend(@PathVariable("id") Long friendId) {
         friendService.deleteFriend(friendId);
-        return new ResponseEntity<>("Friend deleted", HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>("친구 삭제", HttpStatus.NO_CONTENT);
     }
 
 
