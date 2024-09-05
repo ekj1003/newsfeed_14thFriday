@@ -8,6 +8,7 @@ import com.sparta.newsfeed14thfriday.domain.post.dto.response.PostSaveResponseDt
 import com.sparta.newsfeed14thfriday.domain.post.dto.response.PostSimpleResponseDto;
 import com.sparta.newsfeed14thfriday.domain.post.dto.response.PostUpdateResponseDto;
 import com.sparta.newsfeed14thfriday.domain.post.service.PostService;
+import com.sparta.newsfeed14thfriday.global.config.TokenUserEmail;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
@@ -19,8 +20,9 @@ public class PostController {
 
     // 게시물 생성
     @PostMapping("/posts")
-    public PostSaveResponseDto createPost(@RequestBody PostSaveRequestDto postSaveRequestDto){
-        return postService.createPost(postSaveRequestDto);
+    public PostSaveResponseDto createPost(@TokenUserEmail String Token,
+            @RequestBody PostSaveRequestDto postSaveRequestDto){
+        return postService.createPost(Token,postSaveRequestDto);
     }
 
     // 게시물 단건 조회
@@ -43,8 +45,9 @@ public class PostController {
 
     // 게시물 수정
     @PutMapping("/posts/{postId}")
-    public PostUpdateResponseDto updatePost(@PathVariable Long postId, @RequestBody PostUpdateRequestDto postUpdateRequestDto){
-        return postService.updatePost(postId, postUpdateRequestDto);
+    public PostUpdateResponseDto updatePost(@TokenUserEmail String Token,
+            @PathVariable Long postId, @RequestBody PostUpdateRequestDto postUpdateRequestDto){
+        return postService.updatePost(postId,Token, postUpdateRequestDto);
     }
 
 
@@ -52,8 +55,9 @@ public class PostController {
 
     // 게시물 삭제
     @DeleteMapping("/posts/{postId}")
-    public void deleteUser(@PathVariable Long postId, @RequestBody PostDeleteDto postDeleteDto){
-        postService.deletePost(postId, postDeleteDto);
+    public void deleteUser(@TokenUserEmail String Token,
+            @PathVariable Long postId, @RequestBody PostDeleteDto postDeleteDto){
+        postService.deletePost(Token,postId, postDeleteDto);
     }
 
 
