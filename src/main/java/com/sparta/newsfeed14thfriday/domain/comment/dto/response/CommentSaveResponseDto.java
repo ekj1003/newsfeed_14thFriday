@@ -13,7 +13,6 @@ public class CommentSaveResponseDto {
     private Long commentId;
     private String contents;
     private Long commentLikeCount;
-    private Boolean deleted;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
