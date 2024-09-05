@@ -21,9 +21,15 @@ public class FriendService {
     // 친구 저장
     public Friend saveFriend(FriendListRequestDto requestDto) {
         User user = userRepository.findById(requestDto.getUserEmail())
-                .orElseThrow(() -> new IllegalArgumentException("User not found: " + requestDto.getUserEmail()));
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일: " + requestDto.getUserEmail()));
         User friend = userRepository.findById(requestDto.getFriendEmail())
-                .orElseThrow(() -> new IllegalArgumentException("Friend not found: " + requestDto.getFriendEmail()));
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 친구이메일: " + requestDto.getFriendEmail()));
+
+        // 중복된 친구 관계가 존재하는지 확인
+        friendRepository.findByUserAndFriend(user, friend).ifPresent(existingFriend -> {
+            throw new IllegalArgumentException("이미 친구 관계 " + requestDto.getUserEmail() + " and " + requestDto.getFriendEmail());
+        });
+
 
         Friend newFriend = new Friend(user, friend);
         return friendRepository.save(newFriend);
@@ -56,4 +62,37 @@ public class FriendService {
         );
     }
 
+    // 친구 요청 수락
+    public void acceptFriendRequest(Long friendId, String receiverEmail) {
+        Friend friend = friendRepository.findById(friendId)
+                .orElseThrow(() -> new IllegalArgumentException("Friend not found: " + friendId));
+
+        // 요청한 사용자가 요청을 받은 사람인지 확인
+        if (!friend.getFriend().getEmail().equals(receiverEmail)) {
+            throw new IllegalArgumentException("Unauthorized: Only the receiver can accept the request");
+        }
+
+        friend.accept();
+        friendRepository.save(friend);
+    }
+
+    // 친구 요청 거절 (데이터베이스에서 삭제)
+    public void rejectFriendRequest(Long friendId, String receiverEmail) {
+        Friend friend = friendRepository.findById(friendId)
+                .orElseThrow(() -> new IllegalArgumentException("Friend not found: " + friendId));
+
+        // 요청한 사용자가 요청을 받은 사람인지 확인
+        if (!friend.getFriend().getEmail().equals(receiverEmail)) {
+            throw new IllegalArgumentException("Unauthorized: Only the receiver can reject the request");
+        }
+
+        friendRepository.delete(friend);  // 거절 시 데이터베이스에서 삭제
+    }
+
+    // 친구 삭제
+    public void deleteFriend(Long friendId) {
+        Friend friend = friendRepository.findById(friendId)
+                .orElseThrow(() -> new IllegalArgumentException("Friend not found: " + friendId));
+        friendRepository.delete(friend);
+    }
 }
