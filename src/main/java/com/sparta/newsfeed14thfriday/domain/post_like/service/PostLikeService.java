@@ -41,7 +41,6 @@ public class PostLikeService {
 
         // 저장: PostLike
         PostLike savedPostLike = postLikeRespository.save(postLike);
-        post.updatePostLikeCount();
 
         // 응답 반환
         return new PostLikeCreateResponseDto(
@@ -49,6 +48,27 @@ public class PostLikeService {
             201,
             savedPostLike.getPostLikeId()
         );
+
+    }
+
+    public Long deletePostLike(Long postId, PostLikeCreateRequestDto postLikeCreateRequestDto) {
+        // 조회: 유저 존재 여부, 게시물 존재 여부
+        User user = userRepository.findByEmail(postLikeCreateRequestDto.getEmail())
+            .orElseThrow(() -> new NullPointerException("User not found"));
+
+        Post post = postRepository.findByPostId(postId)
+            .orElseThrow(() -> new NullPointerException("Post not found"));
+
+        // 이미 있는지
+        if(!postLikeRespository.findByEmailAndPostId(postLikeCreateRequestDto.getEmail(), postId).isPresent()){
+            throw new RuntimeException("좋아요를 누른적이없습니다.");
+        }
+
+        // 삭제: PostLike
+        postLikeRespository.deleteById(postId);
+
+        // 응답 반환
+        return postId;
 
     }
 }
