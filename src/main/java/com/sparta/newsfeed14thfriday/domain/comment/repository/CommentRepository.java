@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     // 다시 공부해 볼 것
-    @Query("SELECT c FROM Comment c JOIN FETCH c.email WHERE c.post.postId = :postId and c.deleted !=true")
+    @Query("SELECT c FROM Comment c JOIN FETCH c.email WHERE c.post.postId = :postId")
     List<Comment> findByPostIdWithUser(@Param("postId") Long postId);
 
     Optional<Comment> findByCommentId(Long commentId);
