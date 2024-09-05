@@ -32,8 +32,6 @@ public class PostLikeService {
         if(postLikeRespository.findByEmailAndPostId(postLikeCreateRequestDto.getEmail(), postId).isPresent()){
             throw new RuntimeException("좋아요를 이미 누르셨습니다.");
         }
-
-
         
         // 생성: Post Entity
         PostLike postLike = PostLike.createPostLike(
