@@ -1,5 +1,6 @@
 package com.sparta.newsfeed14thfriday.domain.post.entity;
 
+import com.sparta.newsfeed14thfriday.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
