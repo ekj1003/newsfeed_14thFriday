@@ -1,5 +1,6 @@
 package com.sparta.newsfeed14thfriday.domain.post.service;
 
+import com.sparta.newsfeed14thfriday.domain.auth.exception.AuthException;
 import com.sparta.newsfeed14thfriday.domain.post.dto.request.PostDeleteDto;
 import com.sparta.newsfeed14thfriday.domain.post.dto.request.PostSaveRequestDto;
 import com.sparta.newsfeed14thfriday.domain.post.dto.request.PostUpdateRequestDto;
@@ -28,12 +29,14 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
 
-    @Transactional
-    public PostSaveResponseDto createPost(PostSaveRequestDto data) {
+    public PostSaveResponseDto createPost(String token,PostSaveRequestDto data) {
         // 조회: 유저 존재 여부
         User user = userRepository.findByEmail(data.getEmail())
             .orElseThrow(() -> new NullPointerException("User not found"));
 
+        if(!data.getEmail().equals(token)){
+            throw new AuthException("권한이 없습니다");
+        }
 
         // 생성: Post Entity
         // 포스트를 생성할때 유저네임을 생성할때 넣는것으로 변경 -> 게시물을 찾을때 유저네임으로 찾으려고
@@ -72,10 +75,14 @@ public class PostService {
     }
 
     @Transactional
-    public PostUpdateResponseDto updatePost(Long postId, PostUpdateRequestDto postUpdateRequestDto) {
+    public PostUpdateResponseDto updatePost(Long postId,String token, PostUpdateRequestDto postUpdateRequestDto) {
         // 조회: 게시물 존재 여부, 유저 존재 여부
         Post post = postRepository.findByPostId(postId).orElseThrow(() -> new NullPointerException("Post not found."));
         User user = userRepository.findByEmail(postUpdateRequestDto.getEmail()).orElseThrow(() -> new NullPointerException("User not found."));
+
+        if(!user.getEmail().equals(token)){
+            throw new AuthException("권한이 없습니다");
+        }
 
         //작성자 일치 여부
         if(post.getUser() == null || !ObjectUtils.nullSafeEquals(user.getEmail(), post.getUser().getEmail())){
@@ -97,19 +104,23 @@ public class PostService {
     }
 
     @Transactional
-    public void deletePost(Long postId, PostDeleteDto postDeleteDto) {
+    public void deletePost(String token,Long postId, PostDeleteDto postDeleteDto) {
         // 조회: postId, userId
         Post post = postRepository.findByPostId(postId).orElseThrow(() -> new NullPointerException("Post not found."));
         User user = userRepository.findByEmail(postDeleteDto.getEmail()).orElseThrow(() -> new NullPointerException("User not found."));
 
+        if(!user.getEmail().equals(token)){
+            throw new AuthException("권한이 없습니다");
+        }
+
         //작성자 일치 여부
-        if(!ObjectUtils.nullSafeEquals(user.getEmail(), post.getUser().getEmail())){
+        if(post.getUser() == null || !ObjectUtils.nullSafeEquals(user.getEmail(), post.getUser().getEmail())){
             throw new IllegalArgumentException("작성자가 일치하지않습니다.");
         } else{
             // delete
             postRepository.deleteByPostId(postId);
         }
-        //postRepository.deleteByPostId(postId);
+        postRepository.deleteByPostId(postId);
     }
 
 

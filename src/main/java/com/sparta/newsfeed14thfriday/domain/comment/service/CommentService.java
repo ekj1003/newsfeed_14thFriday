@@ -29,7 +29,7 @@ public class CommentService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
 
-
+    @Transactional
     public CommentSaveResponseDto createComment(Long postId, CommentSaveRequestDto commentSaveRequestDto) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new NullPointerException("Post not found"));
@@ -44,7 +44,7 @@ public class CommentService {
         );
 
         Comment savedComment = commentRepository.save(comment);
-
+        post.increaseCommentCount();
         return new CommentSaveResponseDto(
                 savedComment.getCommentId(),
                 email,
