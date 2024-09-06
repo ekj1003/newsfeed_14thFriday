@@ -141,7 +141,7 @@ public class PostService {
     }
 
     public User findUserByEmail(String email) {
-        User user = userRepository.findByEmailAndDeleted(email,false).orElseThrow(EmailNotFoundException::new);
+        User user = userRepository.findByEmail(email).orElseThrow(EmailNotFoundException::new);
         if (user.getDeleted()) {
             throw new DeletedUserIdException();
         }
